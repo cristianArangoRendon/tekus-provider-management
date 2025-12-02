@@ -12,7 +12,7 @@ Sistema de administración de proveedores y servicios con .NET 9
 
 \- \[x] Repositorio creado
 
-\- \[ ] Base de datos
+\- \[x] Base de datos
 
 \- \[ ] Código .NET
 
