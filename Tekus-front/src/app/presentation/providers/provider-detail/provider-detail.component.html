@@ -1,0 +1,109 @@
+<div class="provider-detail-container" *ngIf="!loading && provider">
+  <div class="header">
+    <div class="title-section">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>{{ provider.name }}</h1>
+    </div>
+    <div class="actions">
+      <button mat-raised-button color="accent" (click)="editProvider()">
+        <mat-icon>edit</mat-icon>
+        Editar
+      </button>
+      <button mat-raised-button color="warn" (click)="deleteProvider()">
+        <mat-icon>delete</mat-icon>
+        Eliminar
+      </button>
+    </div>
+  </div>
+
+  <!-- Información Básica -->
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>business</mat-icon>
+        Información Básica
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>NIT</label>
+          <p>{{ provider.nit }}</p>
+        </div>
+        <div class="info-item">
+          <label>Nombre</label>
+          <p>{{ provider.name }}</p>
+        </div>
+        <div class="info-item">
+          <label>Email</label>
+          <p>
+            <a [href]="'mailto:' + provider.email">{{ provider.email }}</a>
+          </p>
+        </div>
+        <div class="info-item">
+          <label>Fecha de Creación</label>
+          <p>{{ provider.createdAt | date: 'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Servicios -->
+  <mat-card class="services-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>list_alt</mat-icon>
+        Servicios Ofrecidos
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="services.length > 0" class="services-list">
+        <mat-card *ngFor="let service of services" class="service-item">
+          <mat-card-content>
+            <div class="service-header">
+              <h3>{{ service.name }}</h3>
+              <mat-chip class="rate-chip">
+                ${{ service.hourlyRate }}/hora
+              </mat-chip>
+            </div>
+            <div class="service-countries">
+              <mat-icon>public</mat-icon>
+              <span>{{ getCountriesForService(service) }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div *ngIf="services.length === 0" class="no-services">
+        <mat-icon>info</mat-icon>
+        <p>Este proveedor no tiene servicios asignados</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Campos Personalizados -->
+  <mat-card class="custom-fields-card" *ngIf="provider.customFields && provider.customFields.length > 0">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>label</mat-icon>
+        Campos Personalizados
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="custom-fields-grid">
+        <div *ngFor="let field of provider.customFields" class="custom-field-item">
+          <label>{{ field.key }}</label>
+          <div class="field-value-container">
+            <p>{{ field.value }}</p>
+            <mat-chip class="type-chip">{{ field.type }}</mat-chip>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+</div>

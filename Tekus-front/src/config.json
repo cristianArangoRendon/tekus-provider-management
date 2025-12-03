@@ -1,0 +1,9 @@
+{
+  "apiUrl": "http://localhost:3000/api",
+  "appName": "Tekus Front",
+  "version": "1.0.0",
+  "features": {
+    "authentication": true,
+    "notifications": true
+  }
+}

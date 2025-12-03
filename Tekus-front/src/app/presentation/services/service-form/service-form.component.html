@@ -1,0 +1,119 @@
+<div class="service-form-container">
+  <div class="header">
+    <h1>{{ isEditMode ? 'Editar Servicio' : 'Nuevo Servicio' }}</h1>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+        <div class="section">
+          <h2>Información del Servicio</h2>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nombre del Servicio</mat-label>
+              <input 
+                matInput 
+                formControlName="name" 
+                placeholder="Ej: Desarrollo de aplicaciones móviles">
+              <mat-icon matPrefix>work</mat-icon>
+              <mat-error *ngIf="serviceForm.get('name')?.invalid">
+                {{ getErrorMessage('name') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Tarifa por Hora (USD)</mat-label>
+              <input 
+                matInput 
+                type="number" 
+                formControlName="hourlyRate" 
+                placeholder="0.00"
+                min="0"
+                step="0.01">
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <mat-error *ngIf="serviceForm.get('hourlyRate')?.invalid">
+                {{ getErrorMessage('hourlyRate') }}
+              </mat-error>
+              <mat-hint>Ingrese la tarifa por hora en dólares estadounidenses</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Países -->
+        <div class="section">
+          <h2>Países Donde se Ofrece</h2>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Seleccionar Países</mat-label>
+            <mat-select 
+              formControlName="countries" 
+              multiple
+              [compareWith]="compareCountries">
+              <mat-select-trigger>
+                <span *ngIf="serviceForm.get('countries')?.value?.length > 0">
+                  <span *ngFor="let country of serviceForm.get('countries')?.value" class="selected-country">
+                    {{ country.flag }} {{ country.name }}
+                  </span>
+                </span>
+                <span *ngIf="serviceForm.get('countries')?.value?.length === 0">
+                  Seleccione países
+                </span>
+              </mat-select-trigger>
+              <mat-option *ngFor="let country of availableCountries" [value]="country">
+                <span class="country-option">
+                  <span class="flag">{{ country.flag }}</span>
+                  <span class="name">{{ country.name }}</span>
+                  <span class="code">({{ country.code }})</span>
+                </span>
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>public</mat-icon>
+            <mat-error *ngIf="serviceForm.get('countries')?.invalid">
+              {{ getErrorMessage('countries') }}
+            </mat-error>
+            <mat-hint>Seleccione al menos un país donde se ofrece el servicio</mat-hint>
+          </mat-form-field>
+
+          <!-- Vista previa de países seleccionados -->
+          <div class="countries-preview" *ngIf="serviceForm.get('countries')?.value?.length > 0">
+            <h3>Países Seleccionados:</h3>
+            <div class="countries-chips">
+              <mat-chip-set>
+                <mat-chip 
+                  *ngFor="let country of serviceForm.get('countries')?.value"
+                  class="country-chip">
+                  {{ country.flag }} {{ country.name }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="actions">
+          <button 
+            mat-stroked-button 
+            type="button" 
+            (click)="cancel()">
+            Cancelar
+          </button>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="serviceForm.invalid || loading">
+            <mat-icon>save</mat-icon>
+            {{ isEditMode ? 'Actualizar' : 'Crear' }} Servicio
+          </button>
+        </div>
+      </form>
+
+      <div class="loading-overlay" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

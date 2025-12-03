@@ -1,0 +1,189 @@
+<div class="dashboard-container">
+  <!-- Header con Navbar -->
+  <mat-toolbar color="primary" class="dashboard-toolbar">
+    <div class="toolbar-content">
+      <div class="logo-section">
+        <mat-icon>business</mat-icon>
+        <span class="app-title">Tekus Admin</span>
+      </div>
+      
+      <nav class="nav-menu">
+        <button mat-button (click)="navigateToProviders()">
+          <mat-icon>people</mat-icon>
+          Proveedores
+        </button>
+        <button mat-button (click)="navigateToServices()">
+          <mat-icon>list_alt</mat-icon>
+          Servicios
+        </button>
+      </nav>
+
+      <button mat-icon-button (click)="logout()" matTooltip="Cerrar Sesión">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <div class="dashboard-content" *ngIf="!loading && indicators">
+    
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>Dashboard</h1>
+      <p>Resumen general de proveedores y servicios</p>
+    </div>
+
+    <!-- KPIs Principales -->
+    <div class="kpi-cards">
+      <mat-card class="kpi-card providers-card">
+        <mat-card-content>
+          <div class="kpi-icon">
+            <mat-icon>business_center</mat-icon>
+          </div>
+          <div class="kpi-info">
+            <h3>Total Proveedores</h3>
+            <p class="kpi-value">{{ indicators.totalProviders }}</p>
+            <button mat-stroked-button color="primary" (click)="navigateToProviders()">
+              Ver todos
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="kpi-card services-card">
+        <mat-card-content>
+          <div class="kpi-icon">
+            <mat-icon>miscellaneous_services</mat-icon>
+          </div>
+          <div class="kpi-info">
+            <h3>Total Servicios</h3>
+            <p class="kpi-value">{{ indicators.totalServices }}</p>
+            <button mat-stroked-button color="accent" (click)="navigateToServices()">
+              Ver todos
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Gráficos e Indicadores -->
+    <div class="indicators-grid">
+      
+      <!-- Proveedores por País -->
+      <mat-card class="indicator-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>public</mat-icon>
+            Servicios por País (Top 5)
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="country-list">
+            <div 
+              *ngFor="let country of indicators.providersByCountry" 
+              class="country-item">
+              <div class="country-info">
+                <span class="country-name">{{ country.country }}</span>
+                <span class="country-count">{{ country.count }} servicios</span>
+              </div>
+              <div class="progress-container">
+                <div 
+                  class="progress-bar" 
+                  [style.width.%]="country.percentage">
+                </div>
+              </div>
+              <span class="percentage">{{ country.percentage | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Top Servicios -->
+      <mat-card class="indicator-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>trending_up</mat-icon>
+            Top Servicios
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="services-list">
+            <div 
+              *ngFor="let service of indicators.topServices; let i = index" 
+              class="service-item">
+              <div class="rank-badge">{{ i + 1 }}</div>
+              <div class="service-details">
+                <h4>{{ service.serviceName }}</h4>
+                <div class="service-stats">
+                  <span class="stat">
+                    <mat-icon>business</mat-icon>
+                    {{ service.providerCount }} proveedor(es)
+                  </span>
+                  <span class="stat rate">
+                    <mat-icon>attach_money</mat-icon>
+                    ${{ service.avgHourlyRate | number:'1.2-2' }}/hora
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Proveedores Recientes -->
+    <mat-card class="recent-providers-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>schedule</mat-icon>
+          Proveedores Recientes
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="providers-table">
+          <table mat-table [dataSource]="indicators.recentProviders">
+            
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let provider">
+                <strong>{{ provider.name }}</strong>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let provider">
+                {{ provider.email }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="servicesCount">
+              <th mat-header-cell *matHeaderCellDef>Servicios</th>
+              <td mat-cell *matCellDef="let provider">
+                <mat-chip>{{ provider.servicesCount }}</mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef>Fecha</th>
+              <td mat-cell *matCellDef="let provider">
+                {{ provider.createdAt | date: 'dd/MM/yyyy' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['name', 'email', 'servicesCount', 'createdAt']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'servicesCount', 'createdAt'];"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Cargando dashboard...</p>
+  </div>
+</div>

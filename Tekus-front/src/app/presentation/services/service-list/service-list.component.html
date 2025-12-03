@@ -1,0 +1,138 @@
+<div class="service-list-container">
+  <div class="header">
+    <h1>Servicios</h1>
+    <button mat-raised-button color="primary" (click)="createService()">
+      <mat-icon>add</mat-icon>
+      Nuevo Servicio
+    </button>
+  </div>
+
+  <mat-card class="search-card">
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar servicio</mat-label>
+        <input 
+          matInput 
+          placeholder="Buscar por nombre..." 
+          (input)="onSearch($event)"
+          [(ngModel)]="searchTerm">
+        <mat-icon matPrefix>search</mat-icon>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          *ngIf="searchTerm" 
+          (click)="searchTerm = ''; onSearch($event)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="table-container" *ngIf="!loading">
+        <table mat-table [dataSource]="services" class="services-table">
+          
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-cell" (click)="onSort('name')">
+                Nombre
+                <mat-icon class="sort-icon">{{ getSortIcon('name') }}</mat-icon>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let service">
+              <strong>{{ service.name }}</strong>
+            </td>
+          </ng-container>
+
+          <!-- Hourly Rate Column -->
+          <ng-container matColumnDef="hourlyRate">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-cell" (click)="onSort('hourlyRate')">
+                Tarifa/Hora
+                <mat-icon class="sort-icon">{{ getSortIcon('hourlyRate') }}</mat-icon>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let service">
+              <mat-chip class="rate-chip">
+                ${{ service.hourlyRate }} USD
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Countries Column -->
+          <ng-container matColumnDef="countries">
+            <th mat-header-cell *matHeaderCellDef>Países</th>
+            <td mat-cell *matCellDef="let service">
+              <span 
+                class="countries-flags" 
+                [matTooltip]="getCountriesTooltip(service)">
+                {{ getCountriesDisplay(service) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Created At Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-cell" (click)="onSort('createdAt')">
+                Fecha de Creación
+                <mat-icon class="sort-icon">{{ getSortIcon('createdAt') }}</mat-icon>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let service">
+              {{ service.createdAt | date: 'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let service">
+              <button 
+                mat-icon-button 
+                color="accent" 
+                (click)="editService(service)"
+                matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                color="warn" 
+                (click)="deleteService(service)"
+                matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+          
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="no-data">
+                <mat-icon>inbox</mat-icon>
+                <p>No se encontraron servicios</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <mat-paginator
+          [length]="totalRecords"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageIndex]="page - 1"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

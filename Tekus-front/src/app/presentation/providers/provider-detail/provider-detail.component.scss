@@ -1,0 +1,258 @@
+.provider-detail-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .back-button {
+        mat-icon {
+          color: #666;
+        }
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 500;
+        color: #333;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+
+      button {
+        mat-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .info-card,
+  .services-card,
+  .custom-fields-card {
+    margin-bottom: 24px;
+
+    mat-card-header {
+      margin-bottom: 16px;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 20px;
+        font-weight: 500;
+        color: #555;
+
+        mat-icon {
+          color: #3f51b5;
+        }
+      }
+    }
+  }
+
+  .info-card {
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+
+      .info-item {
+        label {
+          display: block;
+          font-size: 12px;
+          font-weight: 600;
+          color: #666;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 8px;
+        }
+
+        p {
+          margin: 0;
+          font-size: 16px;
+          color: #333;
+
+          a {
+            color: #3f51b5;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .services-card {
+    .services-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 16px;
+
+      .service-item {
+        background-color: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+
+          h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+          }
+
+          .rate-chip {
+            background-color: #4caf50;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+          }
+        }
+
+        .service-countries {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #666;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+
+          span {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .no-services {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px;
+      color: #999;
+
+      mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 16px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 16px;
+      }
+    }
+  }
+
+  .custom-fields-card {
+    .custom-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+
+      .custom-field-item {
+        padding: 16px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+
+        label {
+          display: block;
+          font-size: 12px;
+          font-weight: 600;
+          color: #666;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 8px;
+        }
+
+        .field-value-container {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+            flex: 1;
+          }
+
+          .type-chip {
+            font-size: 11px;
+            padding: 2px 8px;
+            height: auto;
+            min-height: 24px;
+            background-color: #e3f2fd;
+            color: #1976d2;
+          }
+        }
+      }
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+  min-height: 400px;
+}
+
+@media (max-width: 768px) {
+  .provider-detail-container {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+
+      .actions {
+        width: 100%;
+        justify-content: stretch;
+
+        button {
+          flex: 1;
+        }
+      }
+    }
+
+    .services-card {
+      .services-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}
