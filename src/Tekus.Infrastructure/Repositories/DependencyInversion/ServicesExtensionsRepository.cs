@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using task.core.Interfaces.Repositories;
+using task.infraestructure.Repositories;
+using Tekus.Core.Interfaces.Repositories;
 using Tekus.Core.Interfaces.Repositories.DataContext;
 using Tekus.Infrastructure.Repository.DataContext;
 
@@ -11,6 +14,9 @@ namespace Tekus.Infrastructure.Repository.DependencyInversion
         {
             services.AddSingleton(configuration);
             services.AddScoped<IDataContextTekus, DataContextTekus>();
+            services.AddTransient<IProviderRepository, ProviderRepository>();
+            services.AddTransient<IServiceRepository, ServiceRepository>();
+
             return services;
         }
     }

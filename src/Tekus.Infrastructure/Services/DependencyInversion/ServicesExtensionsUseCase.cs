@@ -12,6 +12,8 @@ namespace Tekus.Infrastructure.Services.DependencyInversion
             services.AddTransient<ILogService, LogsService>();
             services.AddTransient<IExecuteStoreProcedureService, ExecuteStoreProcedureService>();
             services.AddTransient<ISqlCommandService, SqlCommandService>();
+            services.AddTransient<ISecurityService, Argon2SecurityService>();
+            services.AddTransient<ITokenService, TokenService>();
             return services;
         }
     }
