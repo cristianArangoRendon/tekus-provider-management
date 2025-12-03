@@ -9,3 +9,7 @@
 *.log
 *.mdf
 *.ldf
+ClientApp/node_modules/
+ClientApp/dist/
+ClientApp/.angular/
+ClientApp/.vscode/
