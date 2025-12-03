@@ -8,7 +8,7 @@ using Tekus.Core.Interfaces.UseCases;
 namespace WMSGlobal.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/authentication")]  
     [Produces("application/json")]
     public class AuthenticationController(ILogService logService, IAuthenticationUseCase useCase) : ControllerBase
     {
