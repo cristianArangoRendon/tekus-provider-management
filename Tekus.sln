@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tekus-back", "Tekus-back", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.API", "src\Tekus.API\Tekus.API.csproj", "{10E90651-8993-42D2-A1CF-9B34715A5BAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.API", "Tekus-back\Tekus.API\Tekus.API.csproj", "{10E90651-8993-42D2-A1CF-9B34715A5BAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.Tests", "tests\Tekus.Tests\Tekus.Tests.csproj", "{E15E257A-39C8-4261-A2D0-460AB9301B58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.Core", "src\Tekus.Core\Tekus.Core.csproj", "{2015215C-4B93-4E68-BF7F-863813F217D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.Core", "Tekus-back\Tekus.Core\Tekus.Core.csproj", "{2015215C-4B93-4E68-BF7F-863813F217D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.Infrastructure", "src\Tekus.Infrastructure\Tekus.Infrastructure.csproj", "{6B8D785B-861D-4DE0-AF60-D15334DED217}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tekus.Infrastructure", "Tekus-back\Tekus.Infrastructure\Tekus.Infrastructure.csproj", "{6B8D785B-861D-4DE0-AF60-D15334DED217}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
