@@ -13,7 +13,7 @@ namespace Tekus.Infrastructure.DependencyInversion
             services.AddSingleton(configuration);
             services.AddRepositories(configuration);
             services.AddUseCase(configuration);
-            services.AddServices();
+            services.AddServices(configuration);
             return services;
         }
     }

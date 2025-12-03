@@ -14,6 +14,7 @@ namespace Tekus.Infrastructure.UseCases.DependencyInversion
             services.AddTransient<IProviderUseCase, ProviderUseCase>();
             services.AddTransient<IServiceUseCase, ServiceUseCase>();
             services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
+            services.AddTransient<ICountriesUseCase, CountriesUseCase>();
 
 
 

@@ -1,0 +1,8 @@
+[2025-12-03 09:31:44] CountriesService inicializado - BaseUrl: https://restcountries.com/v3.1
+[2025-12-03 09:31:44] Llamando a: https://restcountries.com/v3.1/all
+[2025-12-03 09:31:49] Status Code: NotFound
+[2025-12-03 09:31:49] Error en API - Status: NotFound - Content: {"_links":{"self":[{"href":"/all","templated":false}]},"_embedded":{"errors":[{"message":"Page Not Found"}]},"message":"Not Found"}
+[2025-12-03 09:32:34] CountriesService inicializado - BaseUrl: https://restcountries.com/v3.1
+[2025-12-03 09:32:45] Llamando a: https://restcountries.com/v3.1/all
+[2025-12-03 09:32:45] Status Code: NotFound
+[2025-12-03 09:32:45] Error en API - Status: NotFound - Content: {"_links":{"self":[{"href":"/all","templated":false}]},"_embedded":{"errors":[{"message":"Page Not Found"}]},"message":"Not Found"}
