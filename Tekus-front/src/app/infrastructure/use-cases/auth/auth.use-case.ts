@@ -48,16 +48,12 @@ export class AuthUseCase {
         return of(false);
       }
       
-      localStorage.setItem('authToken', authToken);
+      this._tokenService.setToken(authToken);
       
       if (data?.expiresIn) {
         const expirationTime = new Date(Date.now() + (data.expiresIn * 1000));
         localStorage.setItem('tokenExpiration', expirationTime.toISOString());
       }
-
-      setTimeout(() => {
-        this._tokenService.loadUserData();
-      }, 100);
       
       return of(true);
     } catch (error) {
