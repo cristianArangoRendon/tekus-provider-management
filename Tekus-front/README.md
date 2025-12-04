@@ -1,12 +1,11 @@
-# Tekus Front
+Tekus Front
 
-Proyecto Angular con arquitectura limpia basada en el patrón de casos de uso, servicios y capas bien definidas.
+Proyecto Angular con arquitectura limpia basada en el patrón de casos de uso, servicios desacoplados e implementación modular. La estructura está diseñada para garantizar mantenibilidad, escalabilidad y claridad en el flujo de datos entre las capas.
 
-## 🏗️ Arquitectura del Proyecto
+Arquitectura del Proyecto
 
-Este proyecto sigue una arquitectura limpia con separación clara de responsabilidades:
+El proyecto sigue una arquitectura limpia, separada en capas con responsabilidades claramente definidas:
 
-```
 src/app/
 ├── core/                          # Núcleo de la aplicación
 │   ├── data-transfer-object/      # DTOs (Data Transfer Objects)
@@ -24,8 +23,7 @@ src/app/
 │   ├── services/                  # Servicios de peticiones HTTP
 │   │   ├── http-services/         # Servicio HTTP base
 │   │   ├── config/                # Servicio de configuración
-│   │   └── app/                   # Servicios específicos
-│   │       └── user.service.ts    # Servicio de usuarios
+│   │   └── app/                   # Servicios específicos (ej. user.service.ts)
 │   ├── use-cases/                 # Casos de uso (lógica de negocio)
 │   │   └── app/
 │   │       └── user.usecase.ts    # Caso de uso de usuarios
@@ -35,184 +33,211 @@ src/app/
 └── presentation/                  # Capa de presentación
     ├── components/                # Componentes reutilizables
     └── pages/                     # Páginas de la aplicación
-```
 
-## 📋 Flujo de Datos
+Flujo de Datos
 
-1. **Component/Page** → Llama al caso de uso
-2. **Use Case** → Procesa la lógica de negocio y llama al servicio
-3. **Service** → Realiza la petición HTTP usando HttpService
-4. **HttpService** → Ejecuta la petición y maneja errores
-5. **Response** → Retorna por la cadena hasta el componente
+El flujo de comunicación entre capas sigue este orden:
 
-### Ejemplo de flujo:
+El componente o página llama el caso de uso.
 
-```typescript
-// 1. Componente llama al caso de uso
+El caso de uso procesa reglas y llama al servicio correspondiente.
+
+El servicio ejecuta las peticiones HTTP.
+
+El HttpService arma la petición, maneja errores y retorna la respuesta.
+
+La respuesta viaja de regreso hasta el componente.
+
+Ejemplo completo de flujo
+// 1. Componente invoca el caso de uso
 this.userUseCase.getListUsers(searchTerm, paginator)
   .subscribe(result => {
-    // Maneja el resultado
+    // Manejo del resultado final
   });
 
-// 2. Caso de uso procesa y llama al servicio
+// 2. Caso de uso procesa y delega al servicio
 getListUsers(searchTerm?: string, paginator?: PaginatorDTO): Observable<TableResultDTO> {
   return this.userService.getListUsers(searchTerm, paginator).pipe(
     map(response => this.transformResponse(response))
   );
 }
 
-// 3. Servicio hace la petición HTTP
+// 3. Servicio arma la petición HTTP
 getListUsers(searchTerm?: string, paginator?: PaginatorDTO): Observable<ResponseDTO> {
   return this.configService.getUrlApplication().pipe(
-    switchMap(url => this.httpService.get(url, 'users', params))
+    switchMap(url =>
+      this.httpService.get(url, 'users', params)
+    )
   );
 }
-```
 
-## 🚀 Características Principales
+Características Principales del Proyecto
+HttpService
 
-### 1. HttpService
-Servicio base para todas las peticiones HTTP con:
-- Manejo automático de tokens JWT
-- Interceptación de errores
-- Construcción de URLs con parámetros
-- Manejo de respuestas unificadas
+Servicio base para todas las peticiones HTTP.
+Incluye:
 
-### 2. Use Cases (Casos de Uso)
-Capa de lógica de negocio que:
-- Procesa y transforma datos
-- Maneja la lógica específica de la aplicación
-- Coordina múltiples servicios si es necesario
-- Proporciona métodos de utilidad
+Manejo de autenticación mediante tokens JWT
 
-### 3. Services (Servicios)
-Capa de comunicación con APIs que:
-- Realiza peticiones HTTP específicas
-- Construye endpoints y parámetros
-- Mantiene la firma de contratos con el backend
+Construcción dinámica de URLs
 
-### 4. DTOs (Data Transfer Objects)
-Objetos para transferencia de datos que:
-- Definen la estructura de datos
-- Facilitan el tipado fuerte
-- Documentan los contratos de API
+Encapsulación de manejo de errores
 
-## 📦 Instalación
+Respuestas homogéneas con ResponseDTO
 
-```bash
-# Instalar dependencias
-npm install
+Use Cases (Casos de Uso)
 
-# Ejecutar en desarrollo
-npm start
+La capa que contiene la lógica de negocio.
+Responsabilidades:
 
-# Compilar para producción
-npm run build
-```
+Aplicar lógica y transformaciones
 
-## 🔧 Configuración
+Coordinar servicios
 
-La URL de la API se configura en el `ConfigService`:
+Mantener el flujo limpio entre front y API
 
-```typescript
-// Cambiar URL de la API
+Services (Servicios de Infraestructura)
+
+Encargados de la comunicación con la API.
+Funciones:
+
+Realizar peticiones HTTP
+
+Construir endpoints
+
+Cumplir los contratos definidos en interfaces
+
+DTOs
+
+Objetos que definen los contratos de comunicación.
+Beneficios:
+
+Tipado fuerte
+
+Documentación clara
+
+Facilita escalabilidad
+
+Instalación y Ejecución
+npm install        # Instalar dependencias
+npm start          # Ejecutar en modo desarrollo
+npm run build      # Construir para producción
+
+Configuración del Proyecto
+
+La URL base de la API se administra desde el ConfigService:
+
 this.configService.setUrlApplication('http://tu-api.com/api');
-```
 
-## 📝 Crear Nuevas Funcionalidades
 
-### 1. Crear DTOs
+Para consultar el valor actual:
 
-```typescript
-// src/app/core/data-transfer-object/app/tu-modulo.dto.ts
+this.configService.getUrlApplication().subscribe(url => console.log(url));
+
+Crear Nuevas Funcionalidades Paso a Paso
+1. Crear DTOs
 export interface TuEntidadDTO {
   id: number;
   nombre: string;
 }
-```
 
-### 2. Crear Interfaz del Servicio
-
-```typescript
-// src/app/core/interfaces/app/ITuModulo.service.ts
+2. Crear la Interfaz del Servicio
 export interface ITuModuloService {
   obtenerDatos(): Observable<ResponseDTO>;
 }
-```
 
-### 3. Crear Servicio
-
-```typescript
-// src/app/infrastructure/services/app/tu-modulo.service.ts
+3. Implementación del Servicio
 @Injectable({ providedIn: 'root' })
 export class TuModuloService implements ITuModuloService {
+
   constructor(
     private httpService: HttpService,
     private configService: ConfigService
   ) {}
-  
+
   obtenerDatos(): Observable<ResponseDTO> {
     return this.configService.getUrlApplication().pipe(
       switchMap(url => this.httpService.get(url, 'tu-endpoint'))
     );
   }
 }
-```
 
-### 4. Crear Caso de Uso
-
-```typescript
-// src/app/infrastructure/use-cases/app/tu-modulo.usecase.ts
+4. Crear el Caso de Uso
 @Injectable({ providedIn: 'root' })
 export class TuModuloUseCase {
+
   constructor(private tuModuloService: TuModuloService) {}
-  
+
   obtenerDatosTransformados(): Observable<TuEntidadDTO[]> {
     return this.tuModuloService.obtenerDatos().pipe(
       map(response => this.transformar(response))
     );
   }
+
+  private transformar(response: ResponseDTO): TuEntidadDTO[] {
+    return response.data;
+  }
 }
-```
 
-### 5. Usar en Componente
-
-```typescript
+5. Invocarlo desde un Componente
 export class TuComponente {
+
   constructor(private tuModuloUseCase: TuModuloUseCase) {}
-  
+
   cargarDatos() {
     this.tuModuloUseCase.obtenerDatosTransformados()
       .subscribe(datos => {
-        // Usar los datos
+        console.log(datos);
       });
   }
 }
-```
 
-## 🎯 Mejores Prácticas
+Mejores Prácticas
 
-1. **Separación de Responsabilidades**: Cada capa tiene una responsabilidad específica
-2. **Inyección de Dependencias**: Usar siempre DI de Angular
-3. **Tipado Fuerte**: Usar DTOs e interfaces en todas partes
-4. **Observables**: Preferir Observables sobre Promises
-5. **Manejo de Errores**: Siempre manejar errores en los casos de uso
-6. **Nomenclatura Consistente**: Seguir las convenciones establecidas
+Mantener la separación de capas y responsabilidades
 
-## 📚 Tecnologías
+Usar siempre DTOs para comunicar datos
 
-- Angular 18
-- TypeScript 5.4
-- RxJS 7.8
-- SCSS
+Implementar interfaces antes de servicios
 
-## 🤝 Contribuir
+Manejar errores siempre en los casos de uso
 
-1. Seguir la arquitectura establecida
-2. Mantener la separación de capas
-3. Documentar el código
-4. Escribir código limpio y mantenible
+Aplicar tipado fuerte en todos los métodos
 
-## 📄 Licencia
+Nombrar las clases con patrones consistentes
 
-Este proyecto es privado y confidencial.
+Evitar lógica de negocio directamente en componentes
+
+Tecnologías Utilizadas
+
+Angular 18
+
+RxJS 7.8
+
+TypeScript 5.4
+
+SCSS
+
+Arquitectura basada en casos de uso
+
+Servicios desacoplados mediante interfaces
+
+Contribuir
+
+Para contribuir se debe:
+
+Respetar la arquitectura del proyecto
+
+Organizar correctamente las carpetas
+
+Documentar nuevas funcionalidades
+
+Garantizar que el código sea limpio y legible
+
+Mantener cohesión y bajo acoplamiento
+
+Licencia
+
+Este proyecto es privado, confidencial y no debe distribuirse sin autorización.
+
+Si deseas, puedo generar también una versión corta, una versión corporativa, o una versión para presentación técnica.
