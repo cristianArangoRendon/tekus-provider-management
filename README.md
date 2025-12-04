@@ -14,7 +14,7 @@ Sistema de administración de proveedores y servicios con .NET 9
 
 \- \[x] Base de datos
 
-\- \[ ] Código .NET
+\- \[x] Código .NET
 
 
 
