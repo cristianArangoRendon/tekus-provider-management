@@ -1,3 +1,6 @@
+
+import { TableResultDTO } from '../common/table-result/table-result.dto';
+
 export interface GetProvidersPagedDTO {
   searchTerm?: string;
   isActive?: boolean;
@@ -30,12 +33,4 @@ export interface ProviderPagedDTO {
   totalServices: number;
 }
 
-export interface ProvidersPagedResultDTO {
-  items: ProviderPagedDTO[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
+export type ProvidersPagedResultDTO = TableResultDTO<ProviderPagedDTO>;

@@ -1,138 +1,313 @@
-<div class="service-list-container">
-  <div class="header">
-    <h1>Servicios</h1>
-    <button mat-raised-button color="primary" (click)="createService()">
-      <mat-icon>add</mat-icon>
-      Nuevo Servicio
-    </button>
+<div class="service-list-container" [@fadeIn]>
+  <!-- Header Mejorado -->
+  <div class="page-header" [@fadeInUp]>
+    <div class="header-content">
+      <div class="title-section">
+        <div class="icon-wrapper">
+          <mat-icon>miscellaneous_services</mat-icon>
+        </div>
+        <div class="title-text">
+          <h1>Gestión de Servicios</h1>
+          <p>Administra todos los servicios disponibles</p>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" class="create-btn" (click)="createService()">
+        <mat-icon>add_circle</mat-icon>
+        <span>Nuevo Servicio</span>
+      </button>
+    </div>
   </div>
 
-  <mat-card class="search-card">
+  <!-- Search and Filters Card -->
+  <mat-card class="search-card" [@fadeInUp]>
     <mat-card-content>
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Buscar servicio</mat-label>
-        <input 
-          matInput 
-          placeholder="Buscar por nombre..." 
-          (input)="onSearch($event)"
-          [(ngModel)]="searchTerm">
-        <mat-icon matPrefix>search</mat-icon>
-        <button 
-          mat-icon-button 
-          matSuffix 
-          *ngIf="searchTerm" 
-          (click)="searchTerm = ''; onSearch($event)">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
+      <div class="search-header">
+        <div class="search-section">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Buscar servicios</mat-label>
+            <input 
+              matInput 
+              placeholder="Nombre, descripción..." 
+              (input)="onSearch($event)"
+              [(ngModel)]="searchTerm">
+            <mat-icon matPrefix class="search-icon">search</mat-icon>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              *ngIf="searchTerm" 
+              (click)="clearFilters()"
+              class="clear-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div class="view-controls">
+          <mat-button-toggle-group [(value)]="viewMode" class="view-toggle">
+            <mat-button-toggle value="grid" matTooltip="Vista de tarjetas">
+              <mat-icon>grid_view</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="table" matTooltip="Vista de tabla">
+              <mat-icon>view_list</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <button mat-icon-button [matMenuTriggerFor]="sortMenu" class="sort-btn" matTooltip="Ordenar">
+            <mat-icon>sort</mat-icon>
+          </button>
+          <mat-menu #sortMenu="matMenu">
+            <button mat-menu-item (click)="setSortBy('serviceName')">
+              <mat-icon>sort_by_alpha</mat-icon>
+              <span>Por nombre</span>
+            </button>
+            <button mat-menu-item (click)="setSortBy('hourlyRateUSD')">
+              <mat-icon>attach_money</mat-icon>
+              <span>Por tarifa</span>
+            </button>
+            <button mat-menu-item (click)="setSortBy('createdAt')">
+              <mat-icon>schedule</mat-icon>
+              <span>Por fecha</span>
+            </button>
+          </mat-menu>
+
+          <button mat-icon-button (click)="refreshServices()" matTooltip="Actualizar">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-bar" *ngIf="!loading">
+        <div class="stat-item">
+          <mat-icon>miscellaneous_services</mat-icon>
+          <span class="stat-value">{{ totalRecords }}</span>
+          <span class="stat-label">servicios</span>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="stat-item">
+          <mat-icon>attach_money</mat-icon>
+          <span class="stat-value">${{ getAverageRate() | number:'1.0-0' }}</span>
+          <span class="stat-label">tarifa promedio</span>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="stat-item">
+          <mat-icon>trending_up</mat-icon>
+          <span class="stat-value">${{ getMaxRate() | number:'1.0-0' }}</span>
+          <span class="stat-label">tarifa máxima</span>
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="table-card">
-    <mat-card-content>
-      <div class="table-container" *ngIf="!loading">
-        <table mat-table [dataSource]="services" class="services-table">
-          
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('name')">
-                Nombre
-                <mat-icon class="sort-icon">{{ getSortIcon('name') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let service">
-              <strong>{{ service.name }}</strong>
-            </td>
-          </ng-container>
+  <!-- Content Area -->
+  <div class="content-area" *ngIf="!loading">
+    
+    <!-- Grid View -->
+    <div class="services-grid" *ngIf="viewMode === 'grid'" [@staggerFadeIn]>
+      <div 
+        *ngFor="let service of services; let i = index" 
+        class="service-card"
+        [@cardAnimation]>
+        <div class="card-header">
+          <div class="service-icon">
+            <mat-icon>construction</mat-icon>
+          </div>
+          <div class="card-actions">
+            <button 
+              mat-icon-button 
+              (click)="editService(service)"
+              matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button 
+              mat-icon-button 
+              color="warn"
+              (click)="deleteService(service)"
+              matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <h3 class="service-name">{{ service.serviceName }}</h3>
+          <p class="service-description">
+            {{ service.description || 'Sin descripción disponible' }}
+          </p>
+        </div>
 
-          <!-- Hourly Rate Column -->
-          <ng-container matColumnDef="hourlyRate">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('hourlyRate')">
-                Tarifa/Hora
-                <mat-icon class="sort-icon">{{ getSortIcon('hourlyRate') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let service">
-              <mat-chip class="rate-chip">
-                ${{ service.hourlyRate }} USD
-              </mat-chip>
-            </td>
-          </ng-container>
+        <mat-divider></mat-divider>
 
-          <!-- Countries Column -->
-          <ng-container matColumnDef="countries">
-            <th mat-header-cell *matHeaderCellDef>Países</th>
-            <td mat-cell *matCellDef="let service">
-              <span 
-                class="countries-flags" 
-                [matTooltip]="getCountriesTooltip(service)">
-                {{ getCountriesDisplay(service) }}
-              </span>
-            </td>
-          </ng-container>
+        <div class="card-footer">
+          <div class="rate-badge">
+            <mat-icon>attach_money</mat-icon>
+            <span class="rate-value">{{ formatRate(service.hourlyRateUSD) }}</span>
+            <span class="rate-label">/hora</span>
+          </div>
+          <span class="date-badge">
+            <mat-icon>schedule</mat-icon>
+            {{ service.createdAt | date: 'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
 
-          <!-- Created At Column -->
-          <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('createdAt')">
-                Fecha de Creación
-                <mat-icon class="sort-icon">{{ getSortIcon('createdAt') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let service">
-              {{ service.createdAt | date: 'dd/MM/yyyy' }}
-            </td>
-          </ng-container>
+    <!-- Table View -->
+    <mat-card class="table-card" *ngIf="viewMode === 'table'" [@fadeInUp]>
+      <mat-card-content>
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="services" class="services-table">
+            
+            <!-- Icon Column -->
+            <ng-container matColumnDef="icon">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let service">
+                <div class="table-icon">
+                  <mat-icon>construction</mat-icon>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-            <td mat-cell *matCellDef="let service">
-              <button 
-                mat-icon-button 
-                color="accent" 
-                (click)="editService(service)"
-                matTooltip="Editar">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button 
-                mat-icon-button 
-                color="warn" 
-                (click)="deleteService(service)"
-                matTooltip="Eliminar">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+            <!-- Service Name Column -->
+            <ng-container matColumnDef="serviceName">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('serviceName')">
+                  <span>Nombre del Servicio</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('serviceName') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let service">
+                <div class="name-cell">
+                  <strong>{{ service.serviceName }}</strong>
+                </div>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
-          
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="no-data">
-                <mat-icon>inbox</mat-icon>
-                <p>No se encontraron servicios</p>
-              </div>
-            </td>
-          </tr>
-        </table>
+            <!-- Description Column -->
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let service">
+                <span class="description-text" [matTooltip]="service.description || ''">
+                  {{ service.description || 'Sin descripción' }}
+                </span>
+              </td>
+            </ng-container>
 
+            <!-- Rate Column -->
+            <ng-container matColumnDef="hourlyRateUSD">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('hourlyRateUSD')">
+                  <span>Tarifa/Hora (USD)</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('hourlyRateUSD') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let service">
+                <div class="rate-chip" [class.high-rate]="service.hourlyRateUSD > 100">
+                  <mat-icon>attach_money</mat-icon>
+                  <span>{{ formatRate(service.hourlyRateUSD) }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Date Column -->
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('createdAt')">
+                  <span>Fecha de Creación</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('createdAt') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let service">
+                <div class="date-cell">
+                  <span class="date">{{ service.createdAt | date: 'dd MMM yyyy' }}</span>
+                  <span class="time">{{ service.createdAt | date: 'HH:mm' }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="actions-header">Acciones</span>
+              </th>
+              <td mat-cell *matCellDef="let service" class="actions-cell">
+                <div class="action-buttons">
+                  <button 
+                    mat-icon-button 
+                    color="accent" 
+                    (click)="$event.stopPropagation(); editService(service)"
+                    matTooltip="Editar servicio"
+                    class="action-btn">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button 
+                    mat-icon-button 
+                    color="warn" 
+                    (click)="$event.stopPropagation(); deleteService(service)"
+                    matTooltip="Eliminar servicio"
+                    class="action-btn">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+            
+            <!-- No Data Row -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+                <div class="no-data">
+                  <div class="no-data-icon">
+                    <mat-icon>construction</mat-icon>
+                  </div>
+                  <h3>No se encontraron servicios</h3>
+                  <p>Comienza agregando servicios para ofrecer a tus proveedores</p>
+                  <button mat-raised-button color="primary" (click)="createService()">
+                    <mat-icon>add</mat-icon>
+                    Crear Servicio
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Pagination -->
         <mat-paginator
           [length]="totalRecords"
           [pageSize]="pageSize"
           [pageSizeOptions]="pageSizeOptions"
           [pageIndex]="page - 1"
           (page)="onPageChange($event)"
-          showFirstLastButtons>
+          showFirstLastButtons
+          class="custom-paginator">
         </mat-paginator>
-      </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-      <div class="loading-container" *ngIf="loading">
-        <mat-spinner></mat-spinner>
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-content">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p class="loading-text">Cargando servicios...</p>
+      <p class="loading-subtext">Esto solo tomará un momento</p>
+    </div>
+  </div>
+
+  <!-- Empty State for Grid -->
+  <div class="empty-state" *ngIf="!loading && services.length === 0 && viewMode === 'grid'" [@fadeIn]>
+    <div class="empty-content">
+      <div class="empty-icon">
+        <mat-icon>construction</mat-icon>
       </div>
-    </mat-card-content>
-  </mat-card>
+      <h2>No hay servicios aún</h2>
+      <p>Comienza agregando los servicios que tus proveedores pueden ofrecer</p>
+      <button mat-raised-button color="primary" (click)="createService()">
+        <mat-icon>add</mat-icon>
+        Crear Primer Servicio
+      </button>
+    </div>
+  </div>
 </div>

@@ -1,138 +1,309 @@
-<div class="provider-list-container">
-  <div class="header">
-    <h1>Proveedores</h1>
-    <button mat-raised-button color="primary" (click)="createProvider()">
-      <mat-icon>add</mat-icon>
-      Nuevo Proveedor
-    </button>
+<div class="provider-list-container" [@fadeIn]>
+  <div class="page-header" [@fadeInUp]>
+    <div class="header-content">
+      <div class="title-section">
+        <div class="icon-wrapper">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="title-text">
+          <h1>Gestión de Proveedores</h1>
+          <p>Administra y visualiza todos tus proveedores</p>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" class="create-btn" (click)="createProvider()">
+        <mat-icon>add_circle</mat-icon>
+        <span>Nuevo Proveedor</span>
+      </button>
+    </div>
   </div>
 
-  <mat-card class="search-card">
+  <mat-card class="search-card" [@fadeInUp]>
     <mat-card-content>
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Buscar proveedor</mat-label>
-        <input 
-          matInput 
-          placeholder="Buscar por nombre, email o NIT..." 
-          (input)="onSearch($event)"
-          [(ngModel)]="searchTerm">
-        <mat-icon matPrefix>search</mat-icon>
-        <button 
-          mat-icon-button 
-          matSuffix 
-          *ngIf="searchTerm" 
-          (click)="searchTerm = ''; onSearch($event)">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
+      <div class="search-header">
+        <div class="search-section">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Buscar proveedores</mat-label>
+            <input 
+              matInput 
+              placeholder="Nombre, email, NIT..." 
+              (input)="onSearch($event)"
+              [(ngModel)]="searchTerm">
+            <mat-icon matPrefix class="search-icon">search</mat-icon>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              *ngIf="searchTerm" 
+              (click)="clearFilters()"
+              class="clear-btn">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div class="view-controls">
+          <mat-button-toggle-group [value]="viewMode" (change)="viewMode = $event.value" class="view-toggle">
+            <mat-button-toggle value="grid" matTooltip="Vista de tarjetas">
+              <mat-icon>grid_view</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="table" matTooltip="Vista de tabla">
+              <mat-icon>view_list</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <button mat-icon-button [matMenuTriggerFor]="filterMenu" class="filter-btn" matTooltip="Filtros">
+            <mat-icon [matBadge]="activeFiltersCount" [matBadgeHidden]="activeFiltersCount === 0" matBadgeColor="accent">filter_list</mat-icon>
+          </button>
+          <mat-menu #filterMenu="matMenu" class="filter-menu">
+            <div class="filter-content" (click)="$event.stopPropagation()">
+              <h3>Filtros</h3>
+              <mat-divider></mat-divider>
+              
+              <div class="filter-group">
+                <label>Cantidad de Servicios</label>
+                <mat-chip-set>
+                  <mat-chip-option (click)="filterByServices('all')">Todos</mat-chip-option>
+                  <mat-chip-option (click)="filterByServices('with')">Con servicios</mat-chip-option>
+                  <mat-chip-option (click)="filterByServices('without')">Sin servicios</mat-chip-option>
+                </mat-chip-set>
+              </div>
+
+              <div class="filter-actions">
+                <button mat-button (click)="clearAllFilters()">Limpiar</button>
+                <button mat-raised-button color="primary">Aplicar</button>
+              </div>
+            </div>
+          </mat-menu>
+
+          <button mat-icon-button (click)="refreshProviders()" matTooltip="Actualizar">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-bar" *ngIf="!loading">
+        <div class="stat-item">
+          <mat-icon>business</mat-icon>
+          <span class="stat-value">{{ totalRecords }}</span>
+          <span class="stat-label">proveedores</span>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="stat-item">
+          <mat-icon>verified</mat-icon>
+          <span class="stat-value">{{ getActiveProviders() }}</span>
+          <span class="stat-label">activos</span>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="stat-item">
+          <mat-icon>miscellaneous_services</mat-icon>
+          <span class="stat-value">{{ getTotalServices() }}</span>
+          <span class="stat-label">servicios</span>
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="table-card">
-    <mat-card-content>
-      <div class="table-container" *ngIf="!loading">
-        <table mat-table [dataSource]="providers" class="providers-table">
-          
-          <!-- NIT Column -->
-          <ng-container matColumnDef="nit">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('nit')">
-                NIT
-                <mat-icon class="sort-icon">{{ getSortIcon('nit') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let provider">{{ provider.nit }}</td>
-          </ng-container>
+  <div class="content-area" *ngIf="!loading">
+    
+    <div class="providers-grid" *ngIf="viewMode === 'grid'" [@staggerFadeIn]>
+      <div 
+        *ngFor="let provider of providers; let i = index" 
+        class="provider-card"
+        [@cardAnimation]
+        (click)="viewProvider(provider)">
+        <div class="card-header">
+          <div class="provider-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="card-actions">
+            <button 
+              mat-icon-button 
+              (click)="$event.stopPropagation(); editProvider(provider)"
+              matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button 
+              mat-icon-button 
+              color="warn"
+              (click)="$event.stopPropagation(); deleteProvider(provider)"
+              matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <h3 class="provider-name">{{ provider.providerName }}</h3>
+          <p class="provider-email">
+            <mat-icon>email</mat-icon>
+            {{ provider.email }}
+          </p>
+          <p class="provider-nit">
+            <mat-icon>badge</mat-icon>
+            NIT: {{ provider.nit }}
+          </p>
+        </div>
 
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('name')">
-                Nombre
-                <mat-icon class="sort-icon">{{ getSortIcon('name') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let provider">
-              <strong>{{ provider.name }}</strong>
-            </td>
-          </ng-container>
+        <mat-divider></mat-divider>
 
-          <!-- Email Column -->
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('email')">
-                Email
-                <mat-icon class="sort-icon">{{ getSortIcon('email') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let provider">
-              <a [href]="'mailto:' + provider.email">{{ provider.email }}</a>
-            </td>
-          </ng-container>
+        <div class="card-footer">
+          <div class="services-badge" [class.has-services]="provider.totalServices > 0">
+            <mat-icon>miscellaneous_services</mat-icon>
+            <span>{{ provider.totalServices }} servicio(s)</span>
+          </div>
+          <span class="date-badge">
+            <mat-icon>schedule</mat-icon>
+            {{ provider.createdAt | date: 'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
 
-          <!-- Services Count Column -->
-          <ng-container matColumnDef="servicesCount">
-            <th mat-header-cell *matHeaderCellDef>Servicios</th>
-            <td mat-cell *matCellDef="let provider">
-              <mat-chip-set>
-                <mat-chip>{{ provider.services?.length || 0 }}</mat-chip>
-              </mat-chip-set>
-            </td>
-          </ng-container>
+    <mat-card class="table-card" *ngIf="viewMode === 'table'" [@fadeInUp]>
+      <mat-card-content>
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="providers" class="providers-table">
+            
+            <ng-container matColumnDef="avatar">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let provider">
+                <div class="table-avatar">
+                  <mat-icon>person</mat-icon>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Created At Column -->
-          <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="header-cell" (click)="onSort('createdAt')">
-                Fecha de Creación
-                <mat-icon class="sort-icon">{{ getSortIcon('createdAt') }}</mat-icon>
-              </div>
-            </th>
-            <td mat-cell *matCellDef="let provider">
-              {{ provider.createdAt | date: 'dd/MM/yyyy' }}
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="nit">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('nit')">
+                  <span>NIT</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('nit') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let provider">
+                <span class="nit-badge">{{ provider.nit }}</span>
+              </td>
+            </ng-container>
 
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-            <td mat-cell *matCellDef="let provider">
-              <button 
-                mat-icon-button 
-                color="primary" 
-                (click)="viewProvider(provider)"
-                matTooltip="Ver detalles">
-                <mat-icon>visibility</mat-icon>
-              </button>
-              <button 
-                mat-icon-button 
-                color="accent" 
-                (click)="editProvider(provider)"
-                matTooltip="Editar">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button 
-                mat-icon-button 
-                color="warn" 
-                (click)="deleteProvider(provider)"
-                matTooltip="Eliminar">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="providerName">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('providerName')">
+                  <span>Nombre del Proveedor</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('providerName') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let provider">
+                <div class="name-cell">
+                  <strong>{{ provider.providerName }}</strong>
+                </div>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
-          
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              <div class="no-data">
-                <mat-icon>inbox</mat-icon>
-                <p>No se encontraron proveedores</p>
-              </div>
-            </td>
-          </tr>
-        </table>
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('email')">
+                  <span>Email</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('email') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let provider">
+                <a [href]="'mailto:' + provider.email" class="email-link" (click)="$event.stopPropagation()">
+                  <mat-icon>email</mat-icon>
+                  {{ provider.email }}
+                </a>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalServices">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('totalServices')">
+                  <span>Servicios</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('totalServices') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let provider">
+                <mat-chip 
+                  class="services-chip"
+                  [class.has-services]="provider.totalServices > 0"
+                  [class.no-services]="provider.totalServices === 0">
+                  <mat-icon>miscellaneous_services</mat-icon>
+                  {{ provider.totalServices }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-cell" (click)="onSort('createdAt')">
+                  <span>Fecha de Creación</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('createdAt') }}</mat-icon>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let provider">
+                <div class="date-cell">
+                  <span class="date">{{ provider.createdAt | date: 'dd MMM yyyy' }}</span>
+                  <span class="time">{{ provider.createdAt | date: 'HH:mm' }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="actions-header">Acciones</span>
+              </th>
+              <td mat-cell *matCellDef="let provider" class="actions-cell">
+                <div class="action-buttons">
+                  <button 
+                    mat-icon-button 
+                    color="primary" 
+                    (click)="$event.stopPropagation(); viewProvider(provider)"
+                    matTooltip="Ver detalles"
+                    class="action-btn">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button 
+                    mat-icon-button 
+                    color="accent" 
+                    (click)="$event.stopPropagation(); editProvider(provider)"
+                    matTooltip="Editar"
+                    class="action-btn">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button 
+                    mat-icon-button 
+                    color="warn" 
+                    (click)="$event.stopPropagation(); deleteProvider(provider)"
+                    matTooltip="Eliminar"
+                    class="action-btn">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr 
+              mat-row 
+              *matRowDef="let row; columns: displayedColumns;" 
+              class="table-row"
+              (click)="viewProvider(row)"></tr>
+            
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+                <div class="no-data">
+                  <div class="no-data-icon">
+                    <mat-icon>inbox</mat-icon>
+                  </div>
+                  <h3>No se encontraron proveedores</h3>
+                  <p>Comienza agregando tu primer proveedor al sistema</p>
+                  <button mat-raised-button color="primary" (click)="createProvider()">
+                    <mat-icon>add</mat-icon>
+                    Crear Proveedor
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
 
         <mat-paginator
           [length]="totalRecords"
@@ -140,13 +311,32 @@
           [pageSizeOptions]="pageSizeOptions"
           [pageIndex]="page - 1"
           (page)="onPageChange($event)"
-          showFirstLastButtons>
+          showFirstLastButtons
+          class="custom-paginator">
         </mat-paginator>
-      </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-      <div class="loading-container" *ngIf="loading">
-        <mat-spinner></mat-spinner>
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-content">
+      <mat-spinner diameter="60" color="primary"></mat-spinner>
+      <p class="loading-text">Cargando proveedores...</p>
+      <p class="loading-subtext">Esto solo tomará un momento</p>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && providers.length === 0 && viewMode === 'grid'" [@fadeIn]>
+    <div class="empty-content">
+      <div class="empty-icon">
+        <mat-icon>person_search</mat-icon>
       </div>
-    </mat-card-content>
-  </mat-card>
+      <h2>No hay proveedores aún</h2>
+      <p>Comienza agregando proveedores para gestionar tus servicios</p>
+      <button mat-raised-button color="primary" (click)="createProvider()">
+        <mat-icon>add</mat-icon>
+        Crear Primer Proveedor
+      </button>
+    </div>
+  </div>
 </div>

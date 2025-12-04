@@ -1,4 +1,4 @@
 export interface TableResultDTO<T = any> {
-    data: T[];
+    results: T[];
     totalRecords: number;
 }

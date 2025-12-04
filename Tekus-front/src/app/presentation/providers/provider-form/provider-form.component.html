@@ -1,3 +1,4 @@
+
 <div class="provider-form-container">
   <div class="header">
     <h1>{{ isEditMode ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h1>
@@ -7,7 +8,6 @@
     <mat-card-content>
       <form [formGroup]="providerForm" (ngSubmit)="onSubmit()">
         
-        <!-- Información Básica -->
         <div class="section">
           <h2>Información Básica</h2>
           
@@ -32,11 +32,11 @@
               <mat-label>Nombre</mat-label>
               <input 
                 matInput 
-                formControlName="name" 
+                formControlName="providerName" 
                 placeholder="Nombre del proveedor">
               <mat-icon matPrefix>business</mat-icon>
-              <mat-error *ngIf="providerForm.get('name')?.invalid">
-                {{ getErrorMessage('name') }}
+              <mat-error *ngIf="providerForm.get('providerName')?.invalid">
+                {{ getErrorMessage('providerName') }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -57,51 +57,29 @@
           </div>
         </div>
 
-        <!-- Servicios -->
-        <div class="section">
-          <h2>Servicios</h2>
-          
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Servicios Ofrecidos</mat-label>
-            <mat-select formControlName="services" multiple>
-              <mat-option *ngFor="let service of availableServices" [value]="service.id">
-                {{ service.name }} - ${{ service.hourlyRate }}/hora
-              </mat-option>
-            </mat-select>
-            <mat-icon matPrefix>list_alt</mat-icon>
-            <mat-hint>Seleccione los servicios que ofrece este proveedor</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <!-- Campos Personalizados -->
         <div class="section">
           <div class="section-header">
             <h2>Campos Personalizados</h2>
+            <mat-hint>Los campos personalizados se agregarán después de crear el proveedor</mat-hint>
           </div>
-
-          <!-- Agregar nuevo campo personalizado -->
           <mat-card class="add-field-card">
             <mat-card-content>
               <form [formGroup]="customFieldForm" class="custom-field-form">
                 <div class="custom-field-inputs">
                   <mat-form-field appearance="outline" class="field-key">
                     <mat-label>Nombre del campo</mat-label>
-                    <input matInput formControlName="key" placeholder="Ej: Número de contacto en marte">
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="field-type">
-                    <mat-label>Tipo</mat-label>
-                    <mat-select formControlName="type">
-                      <mat-option value="text">Texto</mat-option>
-                      <mat-option value="number">Número</mat-option>
-                      <mat-option value="date">Fecha</mat-option>
-                      <mat-option value="boolean">Booleano</mat-option>
-                    </mat-select>
+                    <input 
+                      matInput 
+                      formControlName="fieldName" 
+                      placeholder="Ej: Categoría">
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="field-value">
                     <mat-label>Valor</mat-label>
-                    <input matInput formControlName="value" placeholder="Valor del campo">
+                    <input 
+                      matInput 
+                      formControlName="fieldValue" 
+                      placeholder="Valor del campo">
                   </mat-form-field>
 
                   <button 
@@ -118,18 +96,16 @@
             </mat-card-content>
           </mat-card>
 
-          <!-- Lista de campos personalizados -->
-          <div class="custom-fields-list" *ngIf="customFields.length > 0">
+          <div class="custom-fields-list" *ngIf="customFieldsList.length > 0">
             <div 
-              *ngFor="let field of customFields.controls; let i = index" 
+              *ngFor="let field of customFieldsList; let i = index" 
               class="custom-field-item">
               
               <div class="field-info">
                 <mat-icon class="field-icon">label</mat-icon>
                 <div class="field-details">
-                  <strong>{{ field.get('key')?.value }}</strong>
-                  <span class="field-value">{{ field.get('value')?.value }}</span>
-                  <mat-chip class="field-type-chip">{{ field.get('type')?.value }}</mat-chip>
+                  <strong>{{ field.fieldName }}</strong>
+                  <span class="field-value">{{ field.fieldValue }}</span>
                 </div>
               </div>
 
@@ -144,13 +120,12 @@
             </div>
           </div>
 
-          <div *ngIf="customFields.length === 0" class="no-custom-fields">
+          <div *ngIf="customFieldsList.length === 0" class="no-custom-fields">
             <mat-icon>info</mat-icon>
             <p>No hay campos personalizados agregados</p>
           </div>
         </div>
 
-        <!-- Acciones -->
         <div class="actions">
           <button 
             mat-stroked-button 

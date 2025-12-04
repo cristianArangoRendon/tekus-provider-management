@@ -15,9 +15,6 @@ export class ProvidersUseCase {
     private _notificationService: NotificationsService
   ) {}
 
-  /**
-   * Obtiene proveedores con paginación y filtros
-   */
   GetProvidersPaged(
     filters?: GetProvidersPagedDTO
   ): Observable<ProvidersPagedResultDTO | null> {
@@ -31,7 +28,6 @@ export class ProvidersUseCase {
       })
     );
   }
-
 
   CreateProvider(provider: CreateProviderDTO): Observable<boolean> {
     return new Observable<boolean>((observer) => {
@@ -57,7 +53,6 @@ export class ProvidersUseCase {
     });
   }
 
-
   DeleteProvider(providerId: number): Observable<boolean> {
     return new Observable<boolean>((observer) => {
       this._providersService.DeleteProvider(providerId).subscribe({
@@ -81,7 +76,6 @@ export class ProvidersUseCase {
       });
     });
   }
-
 
   AddCustomFieldToProvider(customField: AddCustomFieldDTO): Observable<boolean> {
     return new Observable<boolean>((observer) => {
@@ -107,7 +101,6 @@ export class ProvidersUseCase {
     });
   }
 
- 
   GetActiveProviders(
     pageNumber: number = 1,
     pageSize: number = 10
@@ -121,7 +114,6 @@ export class ProvidersUseCase {
     };
     return this.GetProvidersPaged(filters);
   }
-
 
   SearchProviders(
     searchTerm: string,
@@ -137,7 +129,6 @@ export class ProvidersUseCase {
     };
     return this.GetProvidersPaged(filters);
   }
-
 
   SearchActiveProviders(
     searchTerm: string,
@@ -155,7 +146,6 @@ export class ProvidersUseCase {
     return this.GetProvidersPaged(filters);
   }
 
- 
   GetProvidersByServices(
     ascending: boolean = false,
     pageNumber: number = 1,

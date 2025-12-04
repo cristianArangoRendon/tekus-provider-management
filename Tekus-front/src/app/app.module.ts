@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +36,8 @@ import { ConfigService } from './infrastructure/services/config/config.service';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+
+    // Material
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -41,6 +47,8 @@ import { ConfigService } from './infrastructure/services/config/config.service';
     MatTableModule,
     MatChipsModule,
     MatProgressSpinnerModule,
+    MatBadgeModule,
+    MatButtonToggleModule
   ],
   providers: [
     HttpService,

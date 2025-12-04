@@ -14,6 +14,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { ServicesRoutingModule } from './services-routing.module';
 import { ServiceListComponent } from './service-list/service-list.component';
@@ -29,8 +33,7 @@ import { ServiceFormComponent } from './service-form/service-form.component';
     ServicesRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    
-    // Material
+
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -41,7 +44,11 @@ import { ServiceFormComponent } from './service-form/service-form.component';
     MatSelectModule,
     MatChipsModule,
     MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatBadgeModule,
+    MatButtonToggleModule
   ]
 })
 export class ServicesModule { }

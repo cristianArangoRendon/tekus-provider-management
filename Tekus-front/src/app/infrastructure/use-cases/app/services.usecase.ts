@@ -15,9 +15,6 @@ export class ServicesUseCase {
     private _notificationService: NotificationsService
   ) {}
 
-  /**
-   * Obtiene servicios con paginación y filtros
-   */
   GetServicesPaged(
     filters?: GetServicesPagedDTO
   ): Observable<ServicesPagedResultDTO | null> {
@@ -31,7 +28,6 @@ export class ServicesUseCase {
       })
     );
   }
-
 
   CreateService(service: CreateServiceDTO): Observable<boolean> {
     return new Observable<boolean>((observer) => {
@@ -57,7 +53,6 @@ export class ServicesUseCase {
     });
   }
 
-
   UpdateService(service: UpdateServiceDTO): Observable<boolean> {
     return new Observable<boolean>((observer) => {
       this._servicesService.UpdateService(service).subscribe({
@@ -81,7 +76,6 @@ export class ServicesUseCase {
       });
     });
   }
-
 
   DeleteService(serviceId: number): Observable<boolean> {
     return new Observable<boolean>((observer) => {
@@ -107,7 +101,6 @@ export class ServicesUseCase {
     });
   }
 
-
   GetActiveServices(
     pageNumber: number = 1,
     pageSize: number = 10
@@ -121,7 +114,6 @@ export class ServicesUseCase {
     };
     return this.GetServicesPaged(filters);
   }
-
 
   SearchServices(
     searchTerm: string,
@@ -138,7 +130,6 @@ export class ServicesUseCase {
     return this.GetServicesPaged(filters);
   }
 
-
   SearchActiveServices(
     searchTerm: string,
     pageNumber: number = 1,
@@ -154,7 +145,6 @@ export class ServicesUseCase {
     };
     return this.GetServicesPaged(filters);
   }
-
 
   GetServicesByRate(
     ascending: boolean = true,
