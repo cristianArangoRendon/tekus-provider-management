@@ -16,6 +16,10 @@ Sistema de administración de proveedores y servicios con .NET 9
 
 \- \[x] Código .NET
 
+\- \[x] Front Angular
+
+
+
 
 
 \## Instalación
