@@ -750,3 +750,95 @@ BEGIN
     ORDER BY [IndicatorType], [CountryCode];
 END;
 GO
+
+
+USE [TekusDB]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_ResumenDashboard]    Script Date: 5/12/2025 4:02:40 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[sp_ResumenDashboard]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @TotalProviders INT;
+    SELECT @TotalProviders = COUNT(DISTINCT ProviderId)
+    FROM ProviderServices
+    WHERE IsActive = 1;
+    
+    DECLARE @TotalServices INT;
+    SELECT @TotalServices = COUNT(*)
+    FROM ProviderServices
+    WHERE IsActive = 1;
+    
+    DECLARE @ProvidersByCountry NVARCHAR(MAX);
+    
+    WITH ProviderCountrySplit AS (
+        SELECT DISTINCT
+            ps.ProviderId,
+            LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(value, '"', ''), '[', ''), ']', ''))) AS Country
+        FROM ProviderServices ps
+        CROSS APPLY STRING_SPLIT(
+            REPLACE(REPLACE(ps.CountryCodes, '[', ''), ']', ''), 
+            ','
+        )
+        WHERE ps.IsActive = 1
+            AND LTRIM(RTRIM(value)) != ''
+            AND LTRIM(RTRIM(value)) NOT IN ('', '""')
+    )
+    SELECT @ProvidersByCountry = (
+        SELECT 
+            Country,
+            COUNT(ProviderId) AS totalProviders
+        FROM ProviderCountrySplit
+        GROUP BY Country
+        ORDER BY totalProviders DESC
+        FOR JSON PATH
+    );
+    
+    DECLARE @ServicesByCountry NVARCHAR(MAX);
+    
+    WITH ServiceCountrySplit AS (
+        SELECT DISTINCT
+            ps.ProviderId,
+            ps.ServiceId,
+            ps.ProviderServiceId, 
+            LTRIM(RTRIM(REPLACE(REPLACE(REPLACE(value, '"', ''), '[', ''), ']', ''))) AS Country
+        FROM ProviderServices ps
+        CROSS APPLY STRING_SPLIT(
+            REPLACE(REPLACE(ps.CountryCodes, '[', ''), ']', ''), 
+            ','
+        )
+        WHERE ps.IsActive = 1
+            AND LTRIM(RTRIM(value)) != ''
+            AND LTRIM(RTRIM(value)) NOT IN ('', '""')
+    )
+    SELECT @ServicesByCountry = (
+        SELECT 
+            Country,
+            COUNT(*) AS totalServices
+        FROM ServiceCountrySplit
+        GROUP BY Country
+        ORDER BY totalServices DESC
+        FOR JSON PATH
+    );
+    
+    SET @ProvidersByCountry = ISNULL(@ProvidersByCountry, '[]');
+    SET @ServicesByCountry = ISNULL(@ServicesByCountry, '[]');
+    
+    DECLARE @FinalJson NVARCHAR(MAX);
+    SET @FinalJson = 
+    (
+        SELECT 
+            @TotalProviders AS totalProviders,
+            @TotalServices AS totalServices,
+            JSON_QUERY(@ProvidersByCountry) AS providersByCountry,
+            JSON_QUERY(@ServicesByCountry) AS servicesByCountry
+        FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+    );
+    
+    SELECT @FinalJson AS JsonResult;
+END
