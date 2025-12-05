@@ -16,6 +16,10 @@ Sistema de administración de proveedores y servicios con .NET 9
 
 \- \[x] Código .NET
 
+\- \[x] Front Angular
+
+
+
 
 
 \## Instalación
@@ -23,6 +27,8 @@ Sistema de administración de proveedores y servicios con .NET 9
 ```bash
 
 git clone https://github.com/cristianArangoRendon/tekus-provider-management.git
+
+ejecutar tests backend: dotnet test --logger "console;verbosity=detailed"
 
 ```
 
