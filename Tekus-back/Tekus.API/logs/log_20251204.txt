@@ -1,0 +1,6 @@
+[2025-12-04 22:12:10] An error occurred while executing stored procedure dbo.sp_ResumenDashboard: Value cannot be null. (Parameter 'parameters')
+[2025-12-04 22:12:27] An error occurred while executing stored procedure dbo.sp_ResumenDashboard: Value cannot be null. (Parameter 'parameters')
+[2025-12-04 22:45:41] An error occurred while executing BLL: MoveNext: The JSON value could not be converted to DashboardSummaryDTO. Path: $ | LineNumber: 0 | BytePositionInLine: 1.
+[2025-12-04 22:47:47] Error deserializando JSON del dashboard: The JSON value could not be converted to DashboardSummaryDTO. Path: $ | LineNumber: 0 | BytePositionInLine: 1.
+[2025-12-04 22:49:30] Error deserializando JSON del dashboard: The JSON value could not be converted to DashboardSummaryDTO. Path: $ | LineNumber: 0 | BytePositionInLine: 1.
+[2025-12-04 22:49:33] Error deserializando JSON del dashboard: The JSON value could not be converted to DashboardSummaryDTO. Path: $ | LineNumber: 0 | BytePositionInLine: 1.

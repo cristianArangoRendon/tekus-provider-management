@@ -145,10 +145,6 @@ namespace Inventory.Infrastructure.Services
             return response;
         }
 
-        /// <summary>
-        /// Executes a stored procedure that returns table data with pagination support.
-        /// FIXED: Removed double execution bug - now executes SP only once.
-        /// </summary>
         public async Task<ResponseDTO> ExecuteTableStoredProcedure<TResult>(string storedProcedureName, object? parameters, Func<SqlDataReader, List<TResult>> mapFunction)
         {
             var response = new ResponseDTO

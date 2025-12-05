@@ -16,6 +16,7 @@ namespace Tekus.Infrastructure.Repository.DependencyInversion
             services.AddScoped<IDataContextTekus, DataContextTekus>();
             services.AddTransient<IProviderRepository, ProviderRepository>();
             services.AddTransient<IServiceRepository, ServiceRepository>();
+            services.AddTransient<IDashboardRepository, DashboardRepository>();
 
             return services;
         }
