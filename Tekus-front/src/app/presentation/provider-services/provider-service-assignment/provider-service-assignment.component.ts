@@ -8,6 +8,7 @@ import { ProviderServicesUseCase } from '../../../infrastructure/use-cases/app/p
 import { ProvidersUseCase } from '../../../infrastructure/use-cases/app/providers.usecase';
 import { ServicesUseCase } from '../../../infrastructure/use-cases/app/services.usecase';
 import { CountriesUseCase } from '../../../infrastructure/use-cases/app/countries.usecase';
+import { NotificationsService } from '../../../infrastructure/services/notifications/notifications.service';
 import { AssignServiceToProviderDTO } from '../../../core/data-transfer-object/app/provider-services.dto';
 import { ProviderPagedDTO } from '../../../core/data-transfer-object/app/providers.dto';
 import { ServicePagedDTO } from '../../../core/data-transfer-object/app/services.dto';
@@ -47,7 +48,8 @@ export class ProviderServiceAssignmentComponent implements OnInit, OnDestroy {
     private providerServicesUseCase: ProviderServicesUseCase,
     private providersUseCase: ProvidersUseCase,
     private servicesUseCase: ServicesUseCase,
-    private countriesUseCase: CountriesUseCase
+    private countriesUseCase: CountriesUseCase,
+    private notificationsService: NotificationsService
   ) {}
 
   ngOnInit(): void {
@@ -115,6 +117,7 @@ export class ProviderServiceAssignmentComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading providers:', error);
+          this.notificationsService.showToastErrorMessage('Error al cargar los proveedores');
         },
       });
   }
@@ -132,6 +135,7 @@ export class ProviderServiceAssignmentComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading services:', error);
+          this.notificationsService.showToastErrorMessage('Error al cargar los servicios');
         },
       });
   }
@@ -149,6 +153,7 @@ export class ProviderServiceAssignmentComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading countries:', error);
+          this.notificationsService.showToastErrorMessage('Error al cargar los países');
           this.isLoadingData = false;
         },
       });
@@ -239,36 +244,46 @@ export class ProviderServiceAssignmentComponent implements OnInit, OnDestroy {
     return country ? country.flagUrl : '';
   }
 
- assignService(): void {
-  if (this.assignmentForm.invalid || this.isSubmitting) {
-    return;
+  assignService(): void {
+    if (this.assignmentForm.invalid || this.isSubmitting) {
+      this.notificationsService.showToastWarningMessage('Por favor complete todos los campos requeridos');
+      return;
+    }
+
+    this.isSubmitting = true;
+    const formValue = this.assignmentForm.value;
+
+    const assignment: AssignServiceToProviderDTO = {
+      providerId: formValue.providerId,
+      serviceId: formValue.serviceId,
+      countryCodes: JSON.stringify(formValue.countryCodes)
+    };
+
+    this.providerServicesUseCase
+      .AssignServiceToProvider(assignment)
+      .pipe(take(1))
+      .subscribe({
+        next: (result) => {
+          this.isSubmitting = false;
+          if (result) {
+            this.notificationsService.showToastSuccessMessage('Servicio asignado exitosamente al proveedor');
+            setTimeout(() => {
+              this.goBack();
+            }, 1000);
+          } else {
+            this.notificationsService.showToastErrorMessage('No se pudo completar la asignación');
+            this.goBack();
+          }
+        },
+        error: (error) => {
+          console.error('Error creating assignment:', error);
+          this.isSubmitting = false;
+          this.notificationsService.showToastErrorMessage(
+            error?.error?.message || 'Error al asignar el servicio al proveedor'
+          );
+        },
+      });
   }
-
-  this.isSubmitting = true;
-  const formValue = this.assignmentForm.value;
-
-  const assignment: AssignServiceToProviderDTO = {
-    providerId: formValue.providerId,
-    serviceId: formValue.serviceId,
-    countryCodes: JSON.stringify(formValue.countryCodes)
-  };
-
-  this.providerServicesUseCase
-    .AssignServiceToProvider(assignment)
-    .pipe(take(1))
-    .subscribe({
-      next: (result) => {
-        this.isSubmitting = false;
-        if (result) {
-          this.goBack();
-        }
-      },
-      error: (error) => {
-        console.error('Error creating assignment:', error);
-        this.isSubmitting = false;
-      },
-    });
-}
 
   goBack(): void {
     this.location.back();

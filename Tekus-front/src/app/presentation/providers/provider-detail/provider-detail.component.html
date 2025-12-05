@@ -1,152 +1,137 @@
-<div class="provider-detail-container">
-  @if (!loading && provider) {
-    <div class="header">
-      <div class="title-section">
-        <button mat-icon-button class="back-button" (click)="goBack()">
+<div class="page-container">
+  <mat-toolbar class="app-toolbar">
+    <div class="toolbar-content">
+      <div class="left-section">
+        <button mat-icon-button class="back-btn" (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <h1>Detalle del Proveedor</h1>
+        <div class="breadcrumb">
+          <span class="parent">Proveedores</span>
+          <mat-icon class="separator">chevron_right</mat-icon>
+          <span class="current">Detalle</span>
+        </div>
       </div>
 
-      <div class="actions">
-        <button mat-raised-button color="accent" (click)="editProvider()">
-          <mat-icon>edit</mat-icon>
-          Editar
-        </button>
-        <button mat-raised-button color="warn" (click)="deleteProvider()">
-          <mat-icon>delete</mat-icon>
-          Eliminar
-        </button>
+      @if (!loading && provider) {
+        <div class="right-section">
+          <button class="action-btn secondary" (click)="editProvider()">
+            <mat-icon>edit</mat-icon>
+            <span>Editar</span>
+          </button>
+          <button class="action-btn danger" (click)="deleteProvider()">
+            <mat-icon>delete_outline</mat-icon>
+            <span>Eliminar</span>
+          </button>
+        </div>
+      }
+    </div>
+  </mat-toolbar>
+
+  @if (loading) {
+    <div class="loading-overlay">
+      <div class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Cargando información...</span>
       </div>
     </div>
-
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>business</mat-icon>
-          Información General
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="info-grid">
-          <div class="info-item">
-            <label>NIT</label>
-            <p>{{ provider.nit }}</p>
-          </div>
-
-          <div class="info-item">
-            <label>Nombre</label>
-            <p class="provider-name">{{ provider.providerName }}</p>
-          </div>
-
-          <div class="info-item">
-            <label>Email</label>
-            <p>
-              <a [href]="'mailto:' + provider.email">{{ provider.email }}</a>
-            </p>
-          </div>
-
-          <div class="info-item">
-            <label>Total de Servicios</label>
-            <p>
-              <mat-chip class="services-chip">
-                {{ provider.totalServices }}
-              </mat-chip>
-            </p>
-          </div>
-
-          <div class="info-item">
-            <label>Fecha de Creación</label>
-            <p>{{ provider.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
-          </div>
-
-          @if (provider.updatedAt) {
-            <div class="info-item">
-              <label>Última Actualización</label>
-              <p>{{ provider.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+  } @else if (provider) {
+    <div class="content-wrapper">
+      
+      <div class="custom-card profile-card">
+        <div class="card-body">
+          <div class="profile-header">
+            <div class="avatar-large">
+              <mat-icon>business</mat-icon>
             </div>
-          }
-        </div>
-      </mat-card-content>
-    </mat-card>
+            <div class="profile-info">
+              <h1>{{ provider.providerName }}</h1>
+              <div class="meta-badges">
+                <span class="badge blue">NIT: {{ provider.nit }}</span>
+                <span class="badge gray">ID: {{ provider.providerId }}</span>
+              </div>
+            </div>
+          </div>
 
-    <mat-card class="custom-fields-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>label</mat-icon>
-          Campos Personalizados
-        </mat-card-title>
-        <button
-          mat-icon-button
-          color="primary"
-          (click)="addCustomField()"
-          matTooltip="Agregar campo personalizado">
-          <mat-icon>add</mat-icon>
-        </button>
-      </mat-card-header>
-      <mat-card-content>
-        @if (customFields.length > 0) {
-          <div class="custom-fields-list">
-            @for (field of customFields; track field.key) {
-              <div class="custom-field-item">
-                <div class="field-icon">
-                  <mat-icon>label_important</mat-icon>
-                </div>
-                <div class="field-content">
-                  <strong>{{ field.key }}</strong>
-                  <p>{{ field.value }}</p>
-                </div>
+          <div class="divider"></div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Correo Electrónico</span>
+              <a [href]="'mailto:' + provider.email" class="value link">
+                <mat-icon>mail_outline</mat-icon>
+                {{ provider.email }}
+              </a>
+            </div>
+            <div class="info-item">
+              <span class="label">Fecha de Registro</span>
+              <span class="value">{{ provider.createdAt | date: 'dd MMM yyyy, HH:mm' }}</span>
+            </div>
+            @if (provider.updatedAt) {
+              <div class="info-item">
+                <span class="label">Última Modificación</span>
+                <span class="value">{{ provider.updatedAt | date: 'dd MMM yyyy, HH:mm' }}</span>
               </div>
             }
           </div>
-        } @else {
-          <div class="no-custom-fields">
-            <mat-icon>info</mat-icon>
-            <p>No hay campos personalizados</p>
-            <button mat-stroked-button color="primary" (click)="addCustomField()">
-              <mat-icon>add</mat-icon>
-              Agregar campo
-            </button>
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
+        </div>
+      </div>
 
-    <mat-card class="services-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>miscellaneous_services</mat-icon>
-          Servicios Ofrecidos
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="services-info">
-          <div class="service-count">
-            <mat-icon>analytics</mat-icon>
-            <div class="count-details">
-              <h3>{{ provider.totalServices }}</h3>
-              <p>Servicio(s) asociado(s)</p>
+      <div class="details-grid">
+        
+        <div class="custom-card stats-card">
+          <div class="card-header">
+            <h3>Resumen de Servicios</h3>
+          </div>
+          <div class="card-body">
+            <div class="big-stat">
+              <div class="stat-icon">
+                <mat-icon>miscellaneous_services</mat-icon>
+              </div>
+              <div class="stat-content">
+                <span class="number">{{ provider.totalServices }}</span>
+                <span class="text">Servicios Activos</span>
+              </div>
+            </div>
+            <div class="info-box">
+              <mat-icon>info</mat-icon>
+              <p>La gestión detallada del catálogo estará disponible en la próxima versión.</p>
             </div>
           </div>
+        </div>
 
-          <mat-divider></mat-divider>
-
-          <div class="note">
-            <mat-icon>info</mat-icon>
-            <p>
-              La gestión detallada de servicios por proveedor estará disponible
-              próximamente
-            </p>
+        <div class="custom-card fields-card">
+          <div class="card-header actions-header">
+            <h3>Campos Personalizados</h3>
+            <button mat-icon-button class="add-btn" (click)="addCustomField()" matTooltip="Agregar campo">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="card-body">
+            @if (customFields.length > 0) {
+              <div class="fields-list">
+                @for (field of customFields; track field.key) {
+                  <div class="field-row">
+                    <div class="field-icon">
+                      <mat-icon>label</mat-icon>
+                    </div>
+                    <div class="field-data">
+                      <span class="key">{{ field.key }}</span>
+                      <span class="value">{{ field.value }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="empty-state">
+                <mat-icon>playlist_add</mat-icon>
+                <p>Sin campos adicionales</p>
+                <button class="text-btn" (click)="addCustomField()">Configurar ahora</button>
+              </div>
+            }
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-  }
 
-  @if (loading) {
-    <div class="loading-container">
-      <mat-spinner diameter="60"></mat-spinner>
-      <p>Cargando información del proveedor...</p>
+      </div>
     </div>
   }
 </div>

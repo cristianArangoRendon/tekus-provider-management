@@ -1,349 +1,368 @@
-.provider-detail-container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #f5f5f5;
+$primary-color: #1a73e8;
+$primary-hover: #1557b0;
+$primary-light: rgba(26, 115, 232, 0.1);
+$text-primary: #202124;
+$text-secondary: #5f6368;
+$border-color: #dadce0;
+$bg-light: #f8f9fa;
+$white: #ffffff;
+$danger-color: #d93025;
+$danger-light: rgba(217, 48, 37, 0.1);
+
+@mixin card-shadow {
+  box-shadow: 
+    0 1px 2px rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+.page-container {
   min-height: 100vh;
+  background: linear-gradient(145deg, #f0f4f8 0%, #e8eef3 100%);
+  font-family: 'Google Sans', 'Roboto', sans-serif;
+  padding-top: 64px;
+}
 
-  // Header simple
-  .header {
-    background: white;
-    padding: 24px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
+.app-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  z-index: 1000;
+  padding: 0;
+
+  .toolbar-content {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    .title-section {
+    .left-section {
       display: flex;
       align-items: center;
       gap: 16px;
 
-      .back-button {
-        mat-icon {
-          color: #666;
-        }
-
-        &:hover {
-          background-color: #f5f5f5;
-        }
+      .back-btn {
+        color: $text-secondary;
+        &:hover { color: $primary-color; background: $primary-light; }
       }
 
-      h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 500;
-        color: #333;
-      }
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-
-      button {
-        mat-icon {
-          margin-right: 8px;
-        }
-      }
-    }
-  }
-
-  // Cards
-  .info-card,
-  .services-card,
-  .custom-fields-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 24px;
-
-    mat-card-header {
-      background-color: #fafafa;
-      padding: 16px 24px;
-      border-bottom: 1px solid #e0e0e0;
-
-      mat-card-title {
+      .breadcrumb {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 18px;
+        font-size: 14px;
+        
+        .parent { color: $text-secondary; font-weight: 500; }
+        .separator { font-size: 16px; width: 16px; height: 16px; color: $border-color; }
+        .current { color: $text-primary; font-weight: 600; }
+      }
+    }
+
+    .right-section {
+      display: flex;
+      gap: 12px;
+
+      .action-btn {
+        height: 40px;
+        padding: 0 20px;
+        border-radius: 20px;
+        font-size: 14px;
         font-weight: 500;
-        color: #333;
-        margin: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        transition: all 0.2s;
 
-        mat-icon {
-          color: #3f51b5;
-          font-size: 22px;
-          width: 22px;
-          height: 22px;
-        }
-      }
+        mat-icon { font-size: 18px; width: 18px; height: 18px; }
 
-      button {
-        mat-icon {
-          font-size: 20px;
-        }
-      }
-    }
-
-    mat-card-content {
-      padding: 24px;
-    }
-  }
-
-  // Información General
-  .info-card {
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 24px;
-
-      .info-item {
-        label {
-          display: block;
-          font-size: 12px;
-          font-weight: 600;
-          color: #757575;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          margin-bottom: 8px;
+        &.secondary {
+          background: $white;
+          border: 1px solid $border-color;
+          color: $text-primary;
+          &:hover { background: $bg-light; border-color: $text-secondary; }
         }
 
-        p {
-          margin: 0;
-          font-size: 16px;
-          color: #333;
-          font-weight: 400;
-
-          &.provider-name {
-            font-weight: 500;
-            color: #3f51b5;
-          }
-
-          a {
-            color: #3f51b5;
-            text-decoration: none;
-
-            &:hover {
-              text-decoration: underline;
-            }
-          }
-        }
-
-        .services-chip {
-          background-color: #3f51b5;
-          color: white;
-          font-weight: 500;
+        &.danger {
+          background: $white;
+          border: 1px solid $danger-light;
+          color: $danger-color;
+          &:hover { background: $danger-light; }
         }
       }
     }
   }
+}
 
-  // Campos Personalizados
-  .custom-fields-card {
-    mat-card-header {
+.content-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.custom-card {
+  background: $white;
+  border-radius: 16px;
+  @include card-shadow;
+  overflow: hidden;
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid $bg-light;
+    
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: $text-primary;
+    }
+
+    &.actions-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      .add-btn {
+        color: $primary-color;
+        &:hover { background: $primary-light; }
+      }
+    }
+  }
+
+  .card-body {
+    padding: 24px;
+  }
+}
+
+.profile-card {
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    .avatar-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, $primary-color, $primary-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $white;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+
+      mat-icon { font-size: 40px; width: 40px; height: 40px; }
     }
 
-    .custom-fields-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
+    .profile-info {
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 28px;
+        font-weight: 400;
+        color: $text-primary;
+      }
 
-      .custom-field-item {
+      .meta-badges {
         display: flex;
-        gap: 12px;
-        padding: 16px;
-        background-color: #fafafa;
-        border-radius: 6px;
-        border: 1px solid #e0e0e0;
+        gap: 8px;
 
-        .field-icon {
+        .badge {
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 500;
+          
+          &.blue { background: $primary-light; color: $primary-color; }
+          &.gray { background: $bg-light; color: $text-secondary; }
+        }
+      }
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: $border-color;
+    margin: 24px 0;
+    opacity: 0.5;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .label { font-size: 12px; color: $text-secondary; font-weight: 500; text-transform: uppercase; }
+      
+      .value { 
+        font-size: 15px; 
+        color: $text-primary; 
+        
+        &.link {
+          color: $primary-color;
+          text-decoration: none;
           display: flex;
           align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
-          background-color: #e8eaf6;
-          border-radius: 6px;
-          flex-shrink: 0;
-
-          mat-icon {
-            color: #3f51b5;
-            font-size: 20px;
-            width: 20px;
-            height: 20px;
-          }
-        }
-
-        .field-content {
-          flex: 1;
-
-          strong {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #757575;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-          }
-
-          p {
-            margin: 0;
-            font-size: 15px;
-            color: #333;
-            line-height: 1.5;
-          }
-        }
-      }
-    }
-
-    .no-custom-fields {
-      text-align: center;
-      padding: 48px 24px;
-      color: #999;
-
-      mat-icon {
-        font-size: 48px;
-        width: 48px;
-        height: 48px;
-        margin-bottom: 16px;
-        color: #bdbdbd;
-      }
-
-      p {
-        margin: 0 0 24px 0;
-        font-size: 15px;
-        color: #757575;
-      }
-
-      button {
-        mat-icon {
-          margin-right: 8px;
+          gap: 6px;
+          font-weight: 500;
+          
+          mat-icon { font-size: 16px; width: 16px; height: 16px; }
+          &:hover { text-decoration: underline; }
         }
       }
     }
   }
 
-  // Servicios
-  .services-card {
-    .services-info {
-      .service-count {
+  @media (max-width: 600px) {
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+      .meta-badges { justify-content: center; }
+    }
+    .info-grid { text-align: center; .value.link { justify-content: center; } }
+  }
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stats-card {
+  .big-stat {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(244, 180, 0, 0.1); // Amber
+      color: #f4b400;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      mat-icon { font-size: 28px; width: 28px; height: 28px; }
+    }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+      .number { font-size: 32px; font-weight: 600; color: $text-primary; line-height: 1; margin-bottom: 4px; }
+      .text { font-size: 14px; color: $text-secondary; }
+    }
+  }
+
+  .info-box {
+    background: $bg-light;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: $text-secondary;
+    line-height: 1.4;
+
+    mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; color: $text-secondary; }
+    p { margin: 0; }
+  }
+}
+
+.fields-card {
+  .fields-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      transition: all 0.2s;
+
+      &:hover { border-color: $primary-color; background: rgba(26, 115, 232, 0.02); }
+
+      .field-icon {
+        width: 32px;
+        height: 32px;
+        background: $bg-light;
+        border-radius: 6px;
         display: flex;
         align-items: center;
-        gap: 20px;
-        padding: 24px;
-        background-color: #e8eaf6;
-        border-radius: 6px;
-        margin-bottom: 20px;
-
-        mat-icon {
-          font-size: 48px;
-          width: 48px;
-          height: 48px;
-          color: #3f51b5;
-        }
-
-        .count-details {
-          h3 {
-            margin: 0;
-            font-size: 36px;
-            font-weight: 500;
-            color: #3f51b5;
-          }
-
-          p {
-            margin: 4px 0 0 0;
-            font-size: 14px;
-            color: #666;
-          }
-        }
+        justify-content: center;
+        color: $text-secondary;
+        mat-icon { font-size: 18px; width: 18px; height: 18px; }
       }
 
-      mat-divider {
-        margin: 20px 0;
-      }
-
-      .note {
+      .field-data {
         display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 16px;
-        background-color: #e3f2fd;
-        border-radius: 6px;
-        border-left: 3px solid #2196f3;
-
-        mat-icon {
-          color: #2196f3;
-          font-size: 22px;
-          width: 22px;
-          height: 22px;
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-
-        p {
-          margin: 0;
-          color: #1565c0;
-          font-size: 14px;
-          line-height: 1.5;
-        }
+        flex-direction: column;
+        .key { font-size: 12px; color: $text-secondary; font-weight: 500; text-transform: uppercase; }
+        .value { font-size: 14px; color: $text-primary; font-weight: 500; }
       }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 24px 0;
+    
+    mat-icon { font-size: 40px; width: 40px; height: 40px; color: $border-color; margin-bottom: 12px; }
+    p { margin: 0 0 12px 0; color: $text-secondary; font-size: 14px; }
+    
+    .text-btn {
+      background: none;
+      border: none;
+      color: $primary-color;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 14px;
+      &:hover { text-decoration: underline; }
     }
   }
 }
 
-// Loading
-.loading-container {
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
+  justify-content: center;
 
-  mat-spinner {
-    margin-bottom: 16px;
-  }
-
-  p {
-    margin: 0;
-    font-size: 15px;
-    color: #666;
-  }
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .provider-detail-container {
-    padding: 16px;
-
-    .header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-
-      .actions {
-        width: 100%;
-
-        button {
-          flex: 1;
-        }
-      }
-    }
-
-    .info-card .info-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .custom-fields-card .custom-fields-list {
-      grid-template-columns: 1fr;
-    }
+  .spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    span { color: $primary-color; font-weight: 500; }
   }
 }

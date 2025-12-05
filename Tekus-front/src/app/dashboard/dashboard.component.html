@@ -1,32 +1,36 @@
 <div class="dashboard-container">
-  <mat-toolbar color="primary" class="dashboard-toolbar" [class.scrolled]="isScrolled">
+  <mat-toolbar class="dashboard-toolbar" [class.scrolled]="isScrolled">
     <div class="toolbar-content">
       <div class="logo-section">
-        <div class="logo-icon">
-          <mat-icon>business</mat-icon>
+        <div class="logo-icon-wrapper">
+          <div class="logo-ring"></div>
+          <mat-icon>settings_suggest</mat-icon>
         </div>
         <div class="logo-text">
-          <span class="app-title">Tekus Admin</span>
-          <span class="app-subtitle">Provider Management</span>
+          <span class="app-title">Sistema de Gestión</span>
+          <span class="app-subtitle">Panel Administrativo</span>
         </div>
       </div>
       
       <nav class="nav-menu">
-        <button mat-button class="nav-button" (click)="navigateToProviders()">
-          <mat-icon>people</mat-icon>
+        <button mat-button class="nav-link" (click)="navigateToProviders()" routerLinkActive="active">
+          <mat-icon>people_outline</mat-icon>
           <span>Proveedores</span>
         </button>
-        <button mat-button class="nav-button" (click)="navigateToServices()">
-          <mat-icon>miscellaneous_services</mat-icon>
+        <button mat-button class="nav-link" (click)="navigateToServices()" routerLinkActive="active">
+          <mat-icon>layers</mat-icon>
           <span>Servicios</span>
         </button>
       </nav>
 
       <div class="user-actions">
-        <button mat-icon-button class="icon-btn" [matMenuTriggerFor]="userMenu">
-          <mat-icon>account_circle</mat-icon>
+        <div class="user-badge">
+          <span>Admin</span>
+        </div>
+        <button mat-icon-button class="profile-btn" [matMenuTriggerFor]="userMenu">
+          <div class="avatar-placeholder">A</div>
         </button>
-        <mat-menu #userMenu="matMenu">
+        <mat-menu #userMenu="matMenu" class="custom-menu">
           <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Cerrar Sesión</span>
@@ -38,197 +42,176 @@
 
   @if (!loading && dashboardData) {
     <div class="dashboard-content">
-      
-      <div class="welcome-section">
-        <div class="welcome-text">
-          <h1>Bienvenido al Dashboard</h1>
-          <p>Vista general de proveedores y servicios por país</p>
+      <div class="content-header">
+        <div class="header-text">
+          <h1>Resumen General</h1>
+          <p>Bienvenido de nuevo, aquí está lo que sucede hoy.</p>
         </div>
-        <div class="quick-actions">
-          <button mat-raised-button color="primary" (click)="navigateToProviders()">
+        
+        <div class="action-bar">
+          <button class="primary-btn" (click)="navigateToProviders()">
             <mat-icon>add</mat-icon>
-            Nuevo Proveedor
+            <span>Proveedor</span>
           </button>
-          <button mat-raised-button color="accent" (click)="navigateToServices()">
+          <button class="secondary-btn" (click)="navigateToServices()">
             <mat-icon>add</mat-icon>
-            Nuevo Servicio
+            <span>Servicio</span>
           </button>
-          <button mat-raised-button class="assignment-button" (click)="navigateToAssignments()">
+          <button class="assignment-btn" (click)="navigateToAssignments()">
             <mat-icon>link</mat-icon>
-            Crear Asignación
+            <span>Asignar</span>
           </button>
         </div>
       </div>
 
       <div class="kpi-grid">
-        <div class="kpi-card providers-card">
-          <div class="kpi-icon-container">
-            <mat-icon>business_center</mat-icon>
-          </div>
-          <div class="kpi-content">
-            <span class="kpi-label">Total Proveedores</span>
-            <h2 class="kpi-value">{{ getTotalProviders() }}</h2>
-            <button mat-button class="kpi-action" (click)="navigateToProviders()">
-              Ver todos
+        <div class="kpi-card blue-theme">
+          <div class="card-decoration"></div>
+          <div class="kpi-header">
+            <div class="icon-box">
+              <mat-icon>business</mat-icon>
+            </div>
+            <button mat-icon-button (click)="navigateToProviders()">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
+          <div class="kpi-body">
+            <span class="value">{{ getTotalProviders() }}</span>
+            <span class="label">Proveedores Totales</span>
+          </div>
         </div>
 
-        <div class="kpi-card services-card">
-          <div class="kpi-icon-container">
-            <mat-icon>miscellaneous_services</mat-icon>
-          </div>
-          <div class="kpi-content">
-            <span class="kpi-label">Total Servicios</span>
-            <h2 class="kpi-value">{{ getTotalServices() }}</h2>
-            <button mat-button class="kpi-action" (click)="navigateToServices()">
-              Ver todos
+        <div class="kpi-card green-theme">
+          <div class="card-decoration"></div>
+          <div class="kpi-header">
+            <div class="icon-box">
+              <mat-icon>verified</mat-icon>
+            </div>
+            <button mat-icon-button (click)="navigateToServices()">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
-        </div>
-
-        <div class="kpi-card countries-card">
-          <div class="kpi-icon-container">
-            <mat-icon>public</mat-icon>
-          </div>
-          <div class="kpi-content">
-            <span class="kpi-label">Países Activos</span>
-            <h2 class="kpi-value">{{ getTotalCountries() }}</h2>
-            <span class="kpi-subtitle">Cobertura Global</span>
+          <div class="kpi-body">
+            <span class="value">{{ getTotalServices() }}</span>
+            <span class="label">Servicios Activos</span>
           </div>
         </div>
 
-        <div class="kpi-card average-card">
-          <div class="kpi-icon-container">
-            <mat-icon>analytics</mat-icon>
+        <div class="kpi-card purple-theme">
+          <div class="card-decoration"></div>
+          <div class="kpi-header">
+            <div class="icon-box">
+              <mat-icon>public</mat-icon>
+            </div>
           </div>
-          <div class="kpi-content">
-            <span class="kpi-label">Promedio por País</span>
-            <h2 class="kpi-value">{{ getTotalCountries() > 0 ? (getTotalProviders() / getTotalCountries()) : 0 | number:'1.0-0' }}</h2>
-            <span class="kpi-subtitle">Proveedores</span>
+          <div class="kpi-body">
+            <span class="value">{{ getTotalCountries() }}</span>
+            <span class="label">Países con Cobertura</span>
+          </div>
+        </div>
+
+        <div class="kpi-card orange-theme">
+          <div class="card-decoration"></div>
+          <div class="kpi-header">
+            <div class="icon-box">
+              <mat-icon>analytics</mat-icon>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <span class="value">{{ getTotalCountries() > 0 ? (getTotalProviders() / getTotalCountries() | number:'1.0-1') : 0 }}</span>
+            <span class="label">Promedio / País</span>
           </div>
         </div>
       </div>
 
       <div class="charts-section">
-        <mat-card class="chart-card">
-          <mat-card-header>
-            <div class="card-header">
-              <div class="header-content">
-                <mat-icon class="header-icon">business_center</mat-icon>
-                <div>
-                  <mat-card-title>Proveedores por País</mat-card-title>
-                  <mat-card-subtitle>Distribución geográfica (Top 5)</mat-card-subtitle>
-                </div>
-              </div>
-              <button mat-icon-button [matMenuTriggerFor]="providersMenu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #providersMenu="matMenu">
-                <button mat-menu-item (click)="refreshDashboard()">
-                  <mat-icon>refresh</mat-icon>
-                  <span>Actualizar</span>
-                </button>
-              </mat-menu>
+        <div class="custom-card">
+          <div class="card-header">
+            <div class="header-title">
+              <h3>Proveedores por País</h3>
+              <span class="subtitle">Top 5 regiones más activas</span>
             </div>
-          </mat-card-header>
-          <mat-card-content>
+            <button mat-icon-button class="more-btn" [matMenuTriggerFor]="providersMenu">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #providersMenu="matMenu">
+              <button mat-menu-item (click)="refreshDashboard()">Actualizar</button>
+            </mat-menu>
+          </div>
+          
+          <div class="card-content">
             @if (getTopProviderCountries().length > 0) {
-              <div class="country-chart">
+              <div class="list-chart">
                 @for (country of getTopProviderCountries(); track country.country; let i = $index) {
-                  <div class="country-bar">
-                    <div class="country-info">
-                      <div class="country-rank">{{ i + 1 }}</div>
-                      <div class="country-details">
-                        <span class="country-name">{{ country.country }}</span>
-                        <span class="country-count">{{ country.totalProviders }} proveedor(es)</span>
-                      </div>
+                  <div class="chart-item">
+                    <div class="item-info">
+                      <span class="rank">#{{ i + 1 }}</span>
+                      <span class="name">{{ country.country }}</span>
+                      <span class="count">{{ country.totalProviders }}</span>
                     </div>
-                    <div class="progress-container">
-                      <div class="progress-bar">
-                        <div 
-                          class="progress-fill providers-fill" 
-                          [style.width.%]="getProviderPercentage(country.totalProviders)">
-                        </div>
-                      </div>
-                      <span class="percentage">{{ getProviderPercentage(country.totalProviders) | number:'1.0-0' }}%</span>
+                    <div class="progress-bg">
+                      <div class="progress-fill primary" [style.width.%]="getProviderPercentage(country.totalProviders)"></div>
                     </div>
                   </div>
                 }
               </div>
             } @else {
-              <div class="no-data">
-                <mat-icon>info</mat-icon>
-                <p>No hay datos de proveedores disponibles</p>
+              <div class="empty-state">
+                <mat-icon>pie_chart_outline</mat-icon>
+                <p>Sin datos disponibles</p>
               </div>
             }
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
 
-        <mat-card class="chart-card">
-          <mat-card-header>
-            <div class="card-header">
-              <div class="header-content">
-                <mat-icon class="header-icon">miscellaneous_services</mat-icon>
-                <div>
-                  <mat-card-title>Servicios por País</mat-card-title>
-                  <mat-card-subtitle>Distribución geográfica (Top 5)</mat-card-subtitle>
-                </div>
-              </div>
-              <button mat-icon-button [matMenuTriggerFor]="servicesMenu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #servicesMenu="matMenu">
-                <button mat-menu-item (click)="refreshDashboard()">
-                  <mat-icon>refresh</mat-icon>
-                  <span>Actualizar</span>
-                </button>
-              </mat-menu>
+        <div class="custom-card">
+          <div class="card-header">
+            <div class="header-title">
+              <h3>Servicios por País</h3>
+              <span class="subtitle">Distribución global de catálogo</span>
             </div>
-          </mat-card-header>
-          <mat-card-content>
+            <button mat-icon-button class="more-btn" [matMenuTriggerFor]="servicesMenu">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #servicesMenu="matMenu">
+              <button mat-menu-item (click)="refreshDashboard()">Actualizar</button>
+            </mat-menu>
+          </div>
+
+          <div class="card-content">
             @if (getTopServiceCountries().length > 0) {
-              <div class="country-chart">
+              <div class="list-chart">
                 @for (country of getTopServiceCountries(); track country.country; let i = $index) {
-                  <div class="country-bar">
-                    <div class="country-info">
-                      <div class="country-rank">{{ i + 1 }}</div>
-                      <div class="country-details">
-                        <span class="country-name">{{ country.country }}</span>
-                        <span class="country-count">{{ country.totalServices }} servicio(s)</span>
-                      </div>
+                  <div class="chart-item">
+                    <div class="item-info">
+                      <span class="rank">#{{ i + 1 }}</span>
+                      <span class="name">{{ country.country }}</span>
+                      <span class="count">{{ country.totalServices }}</span>
                     </div>
-                    <div class="progress-container">
-                      <div class="progress-bar">
-                        <div 
-                          class="progress-fill services-fill" 
-                          [style.width.%]="getServicePercentage(country.totalServices)">
-                        </div>
-                      </div>
-                      <span class="percentage">{{ getServicePercentage(country.totalServices) | number:'1.0-0' }}%</span>
+                    <div class="progress-bg">
+                      <div class="progress-fill success" [style.width.%]="getServicePercentage(country.totalServices)"></div>
                     </div>
                   </div>
                 }
               </div>
             } @else {
-              <div class="no-data">
-                <mat-icon>info</mat-icon>
-                <p>No hay datos de servicios disponibles</p>
+              <div class="empty-state">
+                <mat-icon>insert_chart_outlined</mat-icon>
+                <p>Sin datos disponibles</p>
               </div>
             }
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
-
     </div>
   }
 
   @if (loading) {
-    <div class="loading-container">
-      <mat-spinner diameter="60" color="primary"></mat-spinner>
-      <p>Cargando dashboard...</p>
+    <div class="loading-overlay">
+      <div class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Sincronizando...</span>
+      </div>
     </div>
   }
 </div>

@@ -1,548 +1,383 @@
-.premium-login-container {
-  position: relative;
+// Variables
+$primary-color: #1a73e8;
+$primary-hover: #1557b0;
+$success-color: #0f9d58;
+$error-color: #d93025;
+$text-primary: #202124;
+$text-secondary: #5f6368;
+$border-color: #dadce0;
+$bg-light: #f8f9fa;
+$white: #ffffff;
+
+.login-wrapper {
   min-height: 100vh;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(145deg, #f0f4f8 0%, #e8eef3 100%);
+  font-family: 'Google Sans', 'Roboto', sans-serif;
 }
 
-.animated-bg {
-  position: absolute;
-  inset: 0;
+.login-content {
+  display: grid;
+  grid-template-columns: 480px 480px;
+  width: 100%;
+  max-width: 960px;
+  background: $white;
+  border-radius: 16px;
   overflow: hidden;
-  z-index: 1;
+  box-shadow: 
+    0 1px 2px rgba(60, 64, 67, 0.3),
+    0 2px 6px 2px rgba(60, 64, 67, 0.15);
 
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.3;
-    animation: float 20s infinite ease-in-out;
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
+}
 
-    &.blob-1 {
-      width: 500px;
-      height: 500px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      top: -10%;
-      left: -10%;
-      animation-delay: 0s;
-    }
+// Brand Section (Lado izquierdo)
+.brand-section {
+  position: relative;
+  background: linear-gradient(135deg, #1a73e8 0%, #1557b0 50%, #0d47a1 100%);
+  padding: 60px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: $white;
 
-    &.blob-2 {
-      width: 400px;
-      height: 400px;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      bottom: -10%;
-      right: -10%;
-      animation-delay: 7s;
-    }
-
-    &.blob-3 {
-      width: 350px;
-      height: 350px;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation-delay: 14s;
-    }
+  @media (max-width: 1024px) {
+    display: none;
   }
 
-  .mesh-gradient {
+  .brand-overlay {
     position: absolute;
     inset: 0;
     background: 
-      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(220, 118, 222, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(104, 200, 220, 0.3) 0%, transparent 50%);
-    animation: meshMove 30s ease-in-out infinite;
+      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
   }
-}
 
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(100px, -100px) scale(1.1);
-  }
-  66% {
-    transform: translate(-100px, 100px) scale(0.9);
-  }
-}
-
-@keyframes meshMove {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.1) rotate(180deg);
-  }
-}
-
-.glass-card {
-  position: relative;
-  z-index: 2;
-  max-width: 450px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 28px;
-  padding: 3rem 2.5rem;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-  animation: cardSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  &.dark-mode {
-    background: rgba(30, 30, 30, 0.95);
-    color: rgba(255, 255, 255, 0.95);
-  }
-}
-
-@keyframes cardSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(50px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.brand-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-
-  .brand-icon {
+  .brand-content {
     position: relative;
-    display: inline-block;
-    margin-bottom: 1rem;
-
-    .brand-logo {
-      width: 64px;
-      height: 64px;
-      font-size: 64px;
-      color: #667eea;
-      filter: drop-shadow(0 4px 12px rgba(102, 126, 234, 0.3));
-      animation: logoFloat 3s ease-in-out infinite;
-    }
-
-    .icon-glow {
-      position: absolute;
-      inset: -10px;
-      background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%);
-      filter: blur(20px);
-      animation: glowPulse 2s ease-in-out infinite;
-    }
+    z-index: 1;
   }
 
-  .brand-text {
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0 0 0.5rem 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
-
-    p {
-      margin: 0;
-      font-size: 0.95rem;
-      color: rgba(0, 0, 0, 0.6);
-      font-weight: 500;
-    }
-  }
-}
-
-@keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes glowPulse {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.auth-form {
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .floating-label-group {
+  .company-logo {
     position: relative;
-    
-    .input-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .logo-ring {
       position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      pointer-events: none;
+      inset: -8px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: rotate 20s linear infinite;
+    }
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: $white;
+    }
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 500;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+  }
+
+  .tagline {
+    font-size: 16px;
+    margin: 0 0 48px 0;
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 15px;
+      opacity: 0.95;
 
       mat-icon {
-        color: #667eea;
-        font-size: 22px;
-        width: 22px;
-        height: 22px;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Form Section (Lado derecho)
+.form-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+
+  @media (max-width: 768px) {
+    padding: 32px 24px;
+  }
+}
+
+.form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-header {
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 400;
+    color: $text-primary;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.login-form {
+  .input-wrapper {
+    margin-bottom: 24px;
+
+    &:last-of-type {
+      margin-bottom: 32px;
+    }
+  }
+
+  .input-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-primary;
+    margin-bottom: 8px;
+  }
+
+  .input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:focus-within {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    }
+
+    &.input-error {
+      border-color: $error-color;
+
+      &:focus-within {
+        box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.1);
       }
     }
 
-    .glass-input {
-      width: 100%;
-      height: 56px;
-      padding: 0 16px 0 52px;
-      background: rgba(255, 255, 255, 0.8);
-      border: 2px solid rgba(102, 126, 234, 0.2);
-      border-radius: 14px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      outline: none;
-      
-      &:focus {
-        background: rgba(255, 255, 255, 1);
-        border-color: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        
-        ~ .floating-label {
-          top: -8px;
-          left: 12px;
-          font-size: 0.75rem;
-          color: #667eea;
-          background: white;
-          padding: 0 8px;
-        }
-      }
-
-      &:not(:placeholder-shown) ~ .floating-label,
-      &.has-value ~ .floating-label {
-        top: -8px;
-        left: 12px;
-        font-size: 0.75rem;
-        color: #667eea;
-        background: white;
-        padding: 0 8px;
-      }
-    }
-
-    .floating-label {
+    .input-icon {
       position: absolute;
-      left: 52px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(0, 0, 0, 0.6);
-      font-size: 1rem;
+      left: 14px;
+      color: $text-secondary;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
       pointer-events: none;
-      transition: all 0.3s ease;
-      font-weight: 500;
     }
 
-    .password-toggle {
+    .custom-input {
+      flex: 1;
+      width: 100%;
+      height: 48px;
+      padding: 0 48px 0 48px;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      color: $text-primary;
+      outline: none;
+
+      &::placeholder {
+        color: $text-secondary;
+        opacity: 0.6;
+      }
+    }
+
+    .visibility-btn {
       position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
+      right: 8px;
       background: none;
       border: none;
-      cursor: pointer;
       padding: 8px;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-      z-index: 2;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
 
       mat-icon {
-        color: rgba(0, 0, 0, 0.6);
+        color: $text-secondary;
         font-size: 20px;
         width: 20px;
         height: 20px;
       }
 
       &:hover {
-        background: rgba(102, 126, 234, 0.1);
+        background: rgba(0, 0, 0, 0.04);
       }
-    }
 
-    .input-border {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
-    .glass-input:focus ~ .input-border {
-      transform: scaleX(1);
+      &:active {
+        background: rgba(0, 0, 0, 0.08);
+      }
     }
   }
 
-  .validation-error {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: rgba(244, 67, 54, 0.1);
+  .error-text {
+    display: block;
+    font-size: 12px;
+    color: $error-color;
+    margin-top: 6px;
+    padding-left: 4px;
+  }
+
+  .hint-text {
+    display: block;
+    font-size: 12px;
+    color: $text-secondary;
+    margin-top: 6px;
+    padding-left: 4px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    height: 48px;
+    background: $primary-color;
+    border: none;
     border-radius: 8px;
-    color: #f44336;
-    font-size: 0.875rem;
-    animation: errorSlideIn 0.3s ease;
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-    }
-  }
-
-  .info-chip {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: rgba(33, 150, 243, 0.1);
-    border-radius: 12px;
-    color: #2196f3;
-    font-size: 0.875rem;
-    margin-bottom: 1.5rem;
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-    }
-  }
-}
-
-@keyframes errorSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.premium-button {
-  position: relative;
-  width: 100%;
-  height: 56px;
-  border: none;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:not(:disabled) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
-      
-      .button-bg {
-        transform: scale(1.2);
-      }
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-
-  &:disabled {
-    background: rgba(0, 0, 0, 0.1);
-    cursor: not-allowed;
-    color: rgba(0, 0, 0, 0.4);
-  }
-
-  .button-bg {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-    transform: scale(0);
-    transition: transform 0.6s ease;
-  }
-
-  .button-content {
-    position: relative;
+    color: $white;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    z-index: 1;
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-    }
-  }
-}
-
-.trust-badges {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-
-  .badge {
-    display: flex;
-    align-items: center;
     gap: 8px;
-    font-size: 0.75rem;
-    color: rgba(0, 0, 0, 0.6);
-    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 
-    mat-icon {
-      color: #667eea;
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
+    &:hover:not(:disabled) {
+      background: $primary-hover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    &:disabled {
+      background: $border-color;
+      color: rgba(0, 0, 0, 0.38);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    &.loading {
+      pointer-events: none;
+    }
+
+    .loading-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      ::ng-deep .mat-mdc-progress-spinner {
+        --mdc-circular-progress-active-indicator-color: #{$white};
+      }
+
+      span {
+        font-size: 15px;
+      }
     }
   }
 }
 
-.login-footer {
+.form-footer {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid $border-color;
+}
+
+.security-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: $text-secondary;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: $success-color;
+  }
+}
+
+.copyright {
   text-align: center;
-  margin-top: 1.5rem;
   
   p {
+    font-size: 12px;
+    color: $text-secondary;
     margin: 0;
-    font-size: 0.75rem;
-    color: rgba(0, 0, 0, 0.5);
   }
 }
 
-.floating-shapes {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-
-  .shape {
-    position: absolute;
-    opacity: 0.1;
-
-    &.shape-square {
-      width: 100px;
-      height: 100px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      top: 10%;
-      left: 5%;
-      animation: rotateShape 20s linear infinite;
-    }
-
-    &.shape-circle {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      border-radius: 50%;
-      bottom: 15%;
-      right: 10%;
-      animation: bounceShape 15s ease-in-out infinite;
-    }
-
-    &.shape-triangle {
-      width: 0;
-      height: 0;
-      border-left: 50px solid transparent;
-      border-right: 50px solid transparent;
-      border-bottom: 86px solid #4facfe;
-      top: 60%;
-      left: 15%;
-      animation: floatShape 18s ease-in-out infinite;
-    }
-  }
-}
-
-@keyframes rotateShape {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes bounceShape {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-30px);
-  }
-}
-
-@keyframes floatShape {
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(40px, -40px);
-  }
-}
-
+// Responsive
 @media (max-width: 768px) {
-  .premium-login-container {
-    padding: 1rem;
+  .login-wrapper {
+    padding: 16px;
   }
 
-  .glass-card {
-    padding: 2rem 1.5rem;
-    border-radius: 24px;
+  .login-content {
+    border-radius: 12px;
   }
 
-  .brand-header {
-    margin-bottom: 2rem;
-
-    .brand-icon .brand-logo {
-      width: 56px;
-      height: 56px;
-      font-size: 56px;
-    }
-
-    .brand-text h1 {
-      font-size: 1.75rem;
-    }
+  .form-section {
+    padding: 32px 24px 24px;
   }
 
-  .trust-badges {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .floating-shapes .shape {
-    display: none;
+  .form-header h1 {
+    font-size: 24px;
   }
 }

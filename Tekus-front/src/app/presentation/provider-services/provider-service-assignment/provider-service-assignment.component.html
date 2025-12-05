@@ -1,246 +1,222 @@
-<div class="assignment-container">
-  <mat-toolbar class="page-toolbar">
-    <button mat-icon-button (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span class="toolbar-title">Asignar Servicio a Proveedor</span>
+<div class="page-container">
+  <mat-toolbar class="app-toolbar">
+    <div class="toolbar-content">
+      <div class="left-section">
+        <button mat-icon-button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="logo-section">
+          <div class="logo-icon-wrapper">
+            <mat-icon>link</mat-icon>
+          </div>
+          <span class="page-title">Nueva Asignación</span>
+        </div>
+      </div>
+    </div>
   </mat-toolbar>
 
   @if (isLoadingData) {
-    <div class="loading-container">
-      <mat-spinner diameter="60" color="primary"></mat-spinner>
-      <p>Cargando datos...</p>
+    <div class="loading-overlay">
+      <div class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Cargando recursos...</span>
+      </div>
     </div>
   } @else {
-    <div class="assignment-content">
-      <mat-card class="assignment-card">
-        <mat-card-header>
+    <div class="content-wrapper">
+      <div class="main-content">
+        <div class="custom-card form-card">
           <div class="card-header">
-            <mat-icon class="header-icon">link</mat-icon>
-            <div class="header-text">
-              <mat-card-title>Nueva Asignación</mat-card-title>
-              <mat-card-subtitle>Vincule un servicio con un proveedor en países específicos</mat-card-subtitle>
+            <div class="header-content">
+              <h2>Configurar Vinculación</h2>
+              <p>Asocia servicios a proveedores y define su cobertura geográfica.</p>
             </div>
           </div>
-        </mat-card-header>
 
-        <mat-card-content>
           <form [formGroup]="assignmentForm" (ngSubmit)="assignService()">
             
             <div class="form-section">
-              <h3 class="section-title">
-                <mat-icon>business</mat-icon>
-                Información del Proveedor
+              <h3 class="section-label">
+                <span class="step-badge">1</span>
+                Selección de Entidades
               </h3>
               
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Seleccionar Proveedor</mat-label>
-                <mat-select formControlName="providerId" (selectionChange)="onProviderChange()">
-                  <mat-option>
-                    <ngx-mat-select-search 
-                      placeholderLabel="Buscar proveedor..."
-                      noEntriesFoundLabel="No se encontraron resultados"
-                      [formControl]="providerFilterCtrl">
-                    </ngx-mat-select-search>
-                  </mat-option>
-                  @for (provider of filteredProviders$ | async; track provider.providerId) {
-                    <mat-option [value]="provider.providerId">
-                      {{ provider.providerName }} - {{ provider.nit }}
-                    </mat-option>
-                  }
-                </mat-select>
-                <mat-icon matPrefix>business</mat-icon>
-                @if (assignmentForm.get('providerId')?.hasError('required') && assignmentForm.get('providerId')?.touched) {
-                  <mat-error>El proveedor es requerido</mat-error>
-                }
-              </mat-form-field>
+              <div class="entity-grid">
+                <div class="field-container">
+                  <mat-label class="custom-label">Proveedor</mat-label>
+                  <mat-form-field appearance="outline" class="custom-field">
+                    <mat-select formControlName="providerId" (selectionChange)="onProviderChange()" placeholder="Seleccionar...">
+                      <mat-option>
+                        <ngx-mat-select-search 
+                          placeholderLabel="Buscar..."
+                          noEntriesFoundLabel="Sin resultados"
+                          [formControl]="providerFilterCtrl">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      @for (provider of filteredProviders$ | async; track provider.providerId) {
+                        <mat-option [value]="provider.providerId">
+                          {{ provider.providerName }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matPrefix>business</mat-icon>
+                  </mat-form-field>
 
-              @if (selectedProvider) {
-                <div class="provider-info">
-                  <mat-icon>info</mat-icon>
-                  <div class="info-content">
-                    <p><strong>Nombre:</strong> {{ selectedProvider.providerName }}</p>
-                    <p><strong>NIT:</strong> {{ selectedProvider.nit }}</p>
-                    <p><strong>Email:</strong> {{ selectedProvider.email }}</p>
-                    <p><strong>Servicios actuales:</strong> {{ selectedProvider.totalServices }}</p>
-                  </div>
+                  @if (selectedProvider) {
+                    <div class="info-pill blue">
+                      <div class="pill-icon"><mat-icon>verified</mat-icon></div>
+                      <div class="pill-content">
+                        <span class="pill-title">{{ selectedProvider.providerName }}</span>
+                        <span class="pill-subtitle">NIT: {{ selectedProvider.nit }} • {{ selectedProvider.email }}</span>
+                      </div>
+                    </div>
+                  }
                 </div>
-              }
+
+                <div class="field-container">
+                  <mat-label class="custom-label">Servicio</mat-label>
+                  <mat-form-field appearance="outline" class="custom-field">
+                    <mat-select formControlName="serviceId" (selectionChange)="onServiceChange()" placeholder="Seleccionar...">
+                      <mat-option>
+                        <ngx-mat-select-search 
+                          placeholderLabel="Buscar..."
+                          noEntriesFoundLabel="Sin resultados"
+                          [formControl]="serviceFilterCtrl">
+                        </ngx-mat-select-search>
+                      </mat-option>
+                      @for (service of filteredServices$ | async; track service.serviceId) {
+                        <mat-option [value]="service.serviceId">
+                          {{ service.serviceName }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                    <mat-icon matPrefix>layers</mat-icon>
+                  </mat-form-field>
+
+                  @if (selectedService) {
+                    <div class="info-pill green">
+                      <div class="pill-icon"><mat-icon>attach_money</mat-icon></div>
+                      <div class="pill-content">
+                        <span class="pill-title">{{ selectedService.serviceName }}</span>
+                        <span class="pill-subtitle">Tarifa: ${{ selectedService.hourlyRateUSD }}/hr</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
             </div>
 
-            <div class="form-section">
-              <h3 class="section-title">
-                <mat-icon>miscellaneous_services</mat-icon>
-                Información del Servicio
-              </h3>
-              
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Seleccionar Servicio</mat-label>
-                <mat-select formControlName="serviceId" (selectionChange)="onServiceChange()">
-                  <mat-option>
-                    <ngx-mat-select-search 
-                      placeholderLabel="Buscar servicio..."
-                      noEntriesFoundLabel="No se encontraron resultados"
-                      [formControl]="serviceFilterCtrl">
-                    </ngx-mat-select-search>
-                  </mat-option>
-                  @for (service of filteredServices$ | async; track service.serviceId) {
-                    <mat-option [value]="service.serviceId">
-                      {{ service.serviceName }} - ${{ service.hourlyRateUSD }}/hora
-                    </mat-option>
-                  }
-                </mat-select>
-                <mat-icon matPrefix>miscellaneous_services</mat-icon>
-                @if (assignmentForm.get('serviceId')?.hasError('required') && assignmentForm.get('serviceId')?.touched) {
-                  <mat-error>El servicio es requerido</mat-error>
-                }
-              </mat-form-field>
-
-              @if (selectedService) {
-                <div class="service-info">
-                  <mat-icon>info</mat-icon>
-                  <div class="info-content">
-                    <p><strong>Servicio:</strong> {{ selectedService.serviceName }}</p>
-                    <p><strong>Tarifa por hora:</strong> ${{ selectedService.hourlyRateUSD }}</p>
-                    <p><strong>Descripción:</strong> {{ selectedService.description || 'N/A' }}</p>
-                  </div>
-                </div>
-              }
-            </div>
+            <div class="divider"></div>
 
             <div class="form-section">
-              <h3 class="section-title">
-                <mat-icon>public</mat-icon>
+              <h3 class="section-label">
+                <span class="step-badge">2</span>
                 Cobertura Geográfica
               </h3>
 
-              <div class="search-container">
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Buscar países</mat-label>
-                  <input 
-                    matInput 
-                    [formControl]="countrySearchCtrl"
-                    placeholder="Escribe para buscar...">
-                  <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field>
+              <div class="search-box">
+                <mat-icon>search</mat-icon>
+                <input 
+                  type="text" 
+                  [formControl]="countrySearchCtrl"
+                  placeholder="Filtrar países disponibles...">
               </div>
 
               @if ((filteredCountries$ | async)?.length ?? 0 > 0) {
                 <div class="countries-grid">
                   @for (country of filteredCountries$ | async; track country.code) {
-                    <mat-checkbox 
-                      [checked]="isCountrySelected(country.code)"
-                      (change)="toggleCountry(country.code)">
-                      <div class="country-option">
-                        <img [src]="country.flagUrl" [alt]="country.name" class="flag-image">
-                        <div class="country-text">
-                          <span class="country-name">{{ country.name }}</span>
-                          <span class="country-code">{{ country.code }}</span>
-                        </div>
+                    <div class="country-item" 
+                         [class.selected]="isCountrySelected(country.code)"
+                         (click)="toggleCountry(country.code)">
+                      <div class="country-check">
+                        <mat-icon>{{ isCountrySelected(country.code) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
                       </div>
-                    </mat-checkbox>
+                      <img [src]="country.flagUrl" [alt]="country.name" class="flag-img">
+                      <span class="country-name">{{ country.name }}</span>
+                    </div>
                   }
                 </div>
               } @else {
-                <div class="no-countries">
-                  <mat-icon>search_off</mat-icon>
+                <div class="empty-state">
+                  <mat-icon>public_off</mat-icon>
                   <p>No se encontraron países</p>
                 </div>
               }
-
-              @if (selectedCountries.length > 0) {
-                <div class="selected-countries-summary">
-                  <h4>Países seleccionados ({{ selectedCountries.length }})</h4>
-                  <div class="chips-container">
-                    @for (countryCode of selectedCountries; track countryCode) {
-                      <mat-chip (removed)="removeCountry(countryCode)">
-                        <img [src]="getCountryFlag(countryCode)" [alt]="countryCode" class="chip-flag">
-                        {{ getCountryName(countryCode) }}
-                        <button matChipRemove>
-                          <mat-icon>cancel</mat-icon>
-                        </button>
-                      </mat-chip>
-                    }
-                  </div>
-                </div>
-              }
-
+              
               @if (assignmentForm.get('countryCodes')?.hasError('required') && assignmentForm.get('countryCodes')?.touched) {
-                <mat-error class="countries-error">
-                  Debe seleccionar al menos un país
-                </mat-error>
+                <div class="error-message">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>Selecciona al menos un país para la cobertura.</span>
+                </div>
               }
             </div>
 
-            <div class="form-actions">
-              <button 
-                mat-stroked-button 
-                type="button" 
-                (click)="goBack()">
-                <mat-icon>close</mat-icon>
+            <div class="form-footer">
+              <button type="button" class="cancel-btn" (click)="goBack()">
                 Cancelar
               </button>
-              <button 
-                mat-raised-button 
-                color="primary"
-                type="submit"
-                [disabled]="assignmentForm.invalid || isSubmitting">
+              <button type="submit" class="submit-btn" [disabled]="assignmentForm.invalid || isSubmitting">
                 @if (isSubmitting) {
                   <mat-spinner diameter="20"></mat-spinner>
-                  <span>Asignando...</span>
+                  <span>Procesando...</span>
                 } @else {
                   <span>Crear Asignación</span>
+                  <mat-icon>arrow_forward</mat-icon>
                 }
               </button>
             </div>
           </form>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
-      @if (assignmentForm.valid) {
-        <mat-card class="summary-card">
-          <mat-card-header>
-            <mat-card-title>Resumen de Asignación</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="summary-item">
-              <mat-icon>business</mat-icon>
-              <div>
-                <span class="summary-label">Proveedor:</span>
-                <span class="summary-value">{{ selectedProvider?.providerName }}</span>
-              </div>
+      <div class="sidebar">
+        <div class="summary-card" [class.active]="assignmentForm.valid">
+          <div class="summary-header">
+            <h3>Resumen</h3>
+            <span class="status-badge" [class.ready]="assignmentForm.valid">
+              {{ assignmentForm.valid ? 'Listo' : 'Incompleto' }}
+            </span>
+          </div>
+          
+          <div class="summary-content">
+            <div class="summary-row">
+              <span class="label">Proveedor</span>
+              <span class="value">{{ selectedProvider?.providerName || '---' }}</span>
             </div>
-            <div class="summary-item">
-              <mat-icon>badge</mat-icon>
-              <div>
-                <span class="summary-label">NIT:</span>
-                <span class="summary-value">{{ selectedProvider?.nit }}</span>
-              </div>
+            <div class="summary-row">
+              <span class="label">NIT</span>
+              <span class="value">{{ selectedProvider?.nit || '---' }}</span>
             </div>
-            <div class="summary-item">
-              <mat-icon>miscellaneous_services</mat-icon>
-              <div>
-                <span class="summary-label">Servicio:</span>
-                <span class="summary-value">{{ selectedService?.serviceName }}</span>
-              </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row">
+              <span class="label">Servicio</span>
+              <span class="value">{{ selectedService?.serviceName || '---' }}</span>
             </div>
-            <div class="summary-item">
-              <mat-icon>public</mat-icon>
-              <div>
-                <span class="summary-label">Países:</span>
-                <span class="summary-value">{{ selectedCountries.length }} seleccionado(s)</span>
-              </div>
+            <div class="summary-row">
+              <span class="label">Tarifa Base</span>
+              <span class="value highlight">{{ selectedService ? ('$' + selectedService.hourlyRateUSD + '/hr') : '---' }}</span>
             </div>
-            <div class="summary-item">
-              <mat-icon>attach_money</mat-icon>
-              <div>
-                <span class="summary-label">Tarifa:</span>
-                <span class="summary-value">${{ selectedService?.hourlyRateUSD }}/hora</span>
-              </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row">
+              <span class="label">Cobertura</span>
+              <span class="value">{{ selectedCountries.length }} país(es)</span>
             </div>
-          </mat-card-content>
-        </mat-card>
-      }
+            
+            @if (selectedCountries.length > 0) {
+              <div class="selected-flags">
+                @for (countryCode of selectedCountries; track countryCode) {
+                  <div class="mini-flag" [title]="getCountryName(countryCode)">
+                    <img [src]="getCountryFlag(countryCode)" [alt]="countryCode">
+                    <button class="remove-flag" (click)="removeCountry(countryCode); $event.stopPropagation()">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
     </div>
   }
 </div>

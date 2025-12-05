@@ -4,6 +4,7 @@ import { IAuthService } from '../../../core/interfaces/auth/Iauth.service';
 import { ResponseDTO } from '../../../core/data-transfer-object/common/response/response.dto';
 import { HttpService } from '../http-services/http.service';
 import { ConfigService } from '../config/config.service';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,8 @@ export class AuthService implements IAuthService {
 
   constructor(
     private _httpService: HttpService,
-    private _configService: ConfigService
+    private _configService: ConfigService,
+    private _tokenService: TokenService
   ) {}
 
   login(email: string, password: string): Observable<ResponseDTO> {
@@ -61,9 +63,8 @@ export class AuthService implements IAuthService {
     return customError;
   }
 
-  isLoggedIn(): Observable<boolean> {
-    const authToken = localStorage.getItem('authToken');
-    return of(!!authToken);
+  isLoggedIn(): boolean {
+    return this._tokenService.isTokenValid();
   }
 
   private isValidEmail(email: string): boolean {

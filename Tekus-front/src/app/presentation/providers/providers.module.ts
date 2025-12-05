@@ -22,6 +22,7 @@ import { ProvidersRoutingModule } from './providers-routing.module';
 import { ProviderListComponent } from './provider-list/provider-list.component';
 import { ProviderFormComponent } from './provider-form/provider-form.component';
 import { ProviderDetailComponent } from './provider-detail/provider-detail.component';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { ProviderDetailComponent } from './provider-detail/provider-detail.compo
     MatDividerModule,
     MatMenuModule,
     MatBadgeModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatToolbar
   ]
 })
 export class ProvidersModule { }

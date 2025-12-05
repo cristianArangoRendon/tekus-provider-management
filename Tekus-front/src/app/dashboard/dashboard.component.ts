@@ -8,6 +8,7 @@ import {
   CountryServicesDTO,
 } from "../core/data-transfer-object/app/dashboard.dto";
 import { DashboardUseCase } from "../infrastructure/use-cases/app/dashboard.usecase";
+import { AuthUseCase } from "../infrastructure/use-cases/auth/auth.use-case";
 
 @Component({
   selector: "app-dashboard",
@@ -23,6 +24,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private dashboardUseCase: DashboardUseCase,
+    private authUseCase: AuthUseCase,
     private router: Router
   ) {}
 
@@ -109,8 +111,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    localStorage.removeItem("auth_token");
-    this.router.navigate(["/auth/login"]);
+    this.authUseCase
+      .logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (success) => {
+          if (success) {
+            this.router.navigate(["/auth/login"]);
+          }
+        },
+        error: (error) => {
+          console.error("Error al cerrar sesión:", error);
+          // Incluso si hay error, redirigir al login por seguridad
+          this.router.navigate(["/auth/login"]);
+        },
+      });
   }
 
   navigateToProviders(): void {

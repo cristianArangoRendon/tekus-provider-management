@@ -3,7 +3,7 @@ import { ResponseDTO } from '../../data-transfer-object/common/response/response
 
 export interface IAuthService {
   login(email: string, password: string): Observable<ResponseDTO>;
-  isLoggedIn(): Observable<boolean>;
+  isLoggedIn(): boolean;
   validateCredentials(email: string, password: string): boolean;
   getRateLimitInfo(error: any): { retryAfter?: number; retryAfterMinutes?: number } | null;
 }

@@ -1,162 +1,149 @@
-<div class="provider-form-container">
-  <div class="header">
-    <h1>{{ isEditMode ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h1>
-  </div>
+<div class="page-container">
+  <mat-toolbar class="app-toolbar">
+    <div class="toolbar-content">
+      <div class="left-section">
+        <button mat-icon-button class="back-btn" (click)="cancel()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="breadcrumb">
+          <span class="parent">Proveedores</span>
+          <mat-icon class="separator">chevron_right</mat-icon>
+          <span class="current">{{ isEditMode ? 'Editar' : 'Nuevo' }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-toolbar>
 
-  <mat-card>
-    <mat-card-content>
+  <div class="content-wrapper">
+    <div class="custom-card form-card">
+      <div class="card-header">
+        <div class="header-icon">
+          <mat-icon>{{ isEditMode ? 'edit' : 'add_business' }}</mat-icon>
+        </div>
+        <div class="header-text">
+          <h1>{{ isEditMode ? 'Editar Proveedor' : 'Registrar Proveedor' }}</h1>
+          <p>Complete la información básica y configure los atributos adicionales.</p>
+        </div>
+      </div>
+
       <form [formGroup]="providerForm" (ngSubmit)="onSubmit()">
-        
-        <div class="section">
-          <h2>Información Básica</h2>
-          
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>NIT</mat-label>
-              <input 
-                matInput 
-                formControlName="nit" 
-                placeholder="900123456-1"
-                maxlength="11">
-              <mat-icon matPrefix>badge</mat-icon>
-              @if (providerForm.get('nit')?.invalid) {
-                <mat-error>
-                  {{ getErrorMessage('nit') }}
-                </mat-error>
-              }
-              <mat-hint>Formato: 999999999-9</mat-hint>
-            </mat-form-field>
+        <div class="card-body">
+          <div class="form-section">
+            <h3>Información General</h3>
+            <div class="input-grid">
+              <div class="field-wrapper">
+                <mat-label class="custom-label">Nombre de la Empresa</mat-label>
+                <mat-form-field appearance="outline" class="custom-field">
+                  <input matInput formControlName="providerName" placeholder="Ej. Tech Solutions SAS">
+                  <mat-icon matPrefix>business</mat-icon>
+                  @if (providerForm.get('providerName')?.hasError('required')) {
+                    <mat-error>El nombre es requerido</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="field-wrapper">
+                <mat-label class="custom-label">NIT / Identificación</mat-label>
+                <mat-form-field appearance="outline" class="custom-field">
+                  <input matInput formControlName="nit" placeholder="Ej. 900123456-1" maxlength="11">
+                  <mat-icon matPrefix>badge</mat-icon>
+                  @if (providerForm.get('nit')?.hasError('pattern')) {
+                    <mat-error>Formato inválido (Ej: 123456789-0)</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="field-wrapper full-width">
+                <mat-label class="custom-label">Correo Electrónico</mat-label>
+                <mat-form-field appearance="outline" class="custom-field">
+                  <input matInput type="email" formControlName="email" placeholder="contacto@empresa.com">
+                  <mat-icon matPrefix>mail_outline</mat-icon>
+                  @if (providerForm.get('email')?.hasError('email')) {
+                    <mat-error>Ingrese un correo válido</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
           </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Nombre</mat-label>
-              <input 
-                matInput 
-                formControlName="providerName" 
-                placeholder="Nombre del proveedor">
-              <mat-icon matPrefix>business</mat-icon>
-              @if (providerForm.get('providerName')?.invalid) {
-                <mat-error>
-                  {{ getErrorMessage('providerName') }}
-                </mat-error>
-              }
-            </mat-form-field>
-          </div>
+          <div class="divider"></div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Email</mat-label>
-              <input 
-                matInput 
-                type="email" 
-                formControlName="email" 
-                placeholder="contacto@proveedor.com">
-              <mat-icon matPrefix>email</mat-icon>
-              @if (providerForm.get('email')?.invalid) {
-                <mat-error>
-                  {{ getErrorMessage('email') }}
-                </mat-error>
-              }
-            </mat-form-field>
-          </div>
-        </div>
+          <div class="form-section">
+            <div class="section-header">
+              <h3>Campos Personalizados</h3>
+              <span class="badge-info">Opcional</span>
+            </div>
 
-        <div class="section">
-          <div class="section-header">
-            <h2>Campos Personalizados</h2>
-            <mat-hint>Los campos personalizados se agregarán después de crear el proveedor</mat-hint>
-          </div>
-          <mat-card class="add-field-card">
-            <mat-card-content>
-              <form [formGroup]="customFieldForm" class="custom-field-form">
-                <div class="custom-field-inputs">
-                  <mat-form-field appearance="outline" class="field-key">
-                    <mat-label>Nombre del campo</mat-label>
-                    <input 
-                      matInput 
-                      formControlName="fieldName" 
-                      placeholder="Ej: Categoría">
-                  </mat-form-field>
+            <div class="add-field-container" [formGroup]="customFieldForm">
+              <div class="inline-inputs">
+                <mat-form-field appearance="outline" class="dense-field">
+                  <mat-label>Nombre del campo</mat-label>
+                  <input matInput formControlName="fieldName" placeholder="Ej. Ciudad">
+                </mat-form-field>
 
-                  <mat-form-field appearance="outline" class="field-value">
-                    <mat-label>Valor</mat-label>
-                    <input 
-                      matInput 
-                      formControlName="fieldValue" 
-                      placeholder="Valor del campo">
-                  </mat-form-field>
+                <mat-form-field appearance="outline" class="dense-field">
+                  <mat-label>Valor</mat-label>
+                  <input matInput formControlName="fieldValue" placeholder="Ej. Medellín">
+                </mat-form-field>
 
-                  <button 
-                    mat-raised-button 
-                    color="accent" 
-                    type="button"
-                    (click)="addCustomField()"
-                    [disabled]="customFieldForm.invalid">
-                    <mat-icon>add</mat-icon>
-                    Agregar
-                  </button>
-                </div>
-              </form>
-            </mat-card-content>
-          </mat-card>
+                <button 
+                  mat-icon-button 
+                  class="add-btn" 
+                  type="button" 
+                  (click)="addCustomField()"
+                  [disabled]="customFieldForm.invalid"
+                  matTooltip="Agregar a la lista">
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              </div>
+            </div>
 
-          @if (customFieldsList.length > 0) {
-            <div class="custom-fields-list">
-              @for (field of customFieldsList; track $index; let i = $index) {
-                <div class="custom-field-item">
-                  <div class="field-info">
-                    <mat-icon class="field-icon">label</mat-icon>
-                    <div class="field-details">
-                      <strong>{{ field.fieldName }}</strong>
-                      <span class="field-value">{{ field.fieldValue }}</span>
+            @if (customFieldsList.length > 0) {
+              <div class="fields-list">
+                @for (field of customFieldsList; track $index; let i = $index) {
+                  <div class="field-row">
+                    <div class="row-content">
+                      <div class="field-icon">
+                        <mat-icon>label</mat-icon>
+                      </div>
+                      <div class="field-data">
+                        <span class="key">{{ field.fieldName }}</span>
+                        <span class="value">{{ field.fieldValue }}</span>
+                      </div>
                     </div>
+                    <button mat-icon-button color="warn" type="button" (click)="removeCustomField(i)">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
                   </div>
-
-                  <button 
-                    mat-icon-button 
-                    color="warn" 
-                    type="button"
-                    (click)="removeCustomField(i)"
-                    matTooltip="Eliminar campo">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              }
-            </div>
-          }
-
-          @if (customFieldsList.length === 0) {
-            <div class="no-custom-fields">
-              <mat-icon>info</mat-icon>
-              <p>No hay campos personalizados agregados</p>
-            </div>
-          }
+                }
+              </div>
+            } @else {
+              <div class="empty-fields">
+                <p>No hay campos adicionales configurados.</p>
+              </div>
+            }
+          </div>
         </div>
 
-        <div class="actions">
-          <button 
-            mat-stroked-button 
-            type="button" 
-            (click)="cancel()">
+        <div class="card-footer">
+          <button type="button" class="cancel-btn" (click)="cancel()">
             Cancelar
           </button>
-          <button 
-            mat-raised-button 
-            color="primary" 
-            type="submit"
-            [disabled]="providerForm.invalid || loading">
-            <mat-icon>save</mat-icon>
-            {{ isEditMode ? 'Actualizar' : 'Crear' }} Proveedor
+          <button type="submit" class="submit-btn" [disabled]="providerForm.invalid || loading">
+            @if (loading) {
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Guardando...</span>
+            } @else {
+              <span>{{ isEditMode ? 'Guardar Cambios' : 'Crear Proveedor' }}</span>
+              <mat-icon>check</mat-icon>
+            }
           </button>
         </div>
       </form>
+    </div>
+  </div>
 
-      @if (loading) {
-        <div class="loading-overlay">
-          <mat-spinner></mat-spinner>
-        </div>
-      }
-    </mat-card-content>
-  </mat-card>
+  @if (loading) {
+    <div class="loading-overlay"></div>
+  }
 </div>

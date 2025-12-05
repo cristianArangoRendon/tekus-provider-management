@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ServicePagedDTO } from '../../../core/data-transfer-object/app/services.dto';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../../../core/data-transfer-object/app/providers.dto';
 import { ProvidersUseCase } from '../../../infrastructure/use-cases/app/providers.usecase';
 import { ServicesUseCase } from '../../../infrastructure/use-cases/app/services.usecase';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface CustomFieldForm {
   fieldName: string;
@@ -37,7 +38,8 @@ export class ProviderFormComponent implements OnInit, OnDestroy {
     private providerUseCase: ProvidersUseCase,
     private servicesUseCase: ServicesUseCase,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -135,18 +137,39 @@ export class ProviderFormComponent implements OnInit, OnDestroy {
 
   addCustomField(): void {
     if (this.customFieldForm.valid) {
+      const fieldName = this.customFieldForm.value.fieldName.trim();
+      const fieldValue = this.customFieldForm.value.fieldValue.trim();
+
+      const exists = this.customFieldsList.some(
+        f => f.fieldName.toLowerCase() === fieldName.toLowerCase()
+      );
+
+      if (exists) {
+        this.snackBar.open('Ya existe un campo con ese nombre', 'Cerrar', {
+          duration: 3000,
+        });
+        return;
+      }
+
       const newField: CustomFieldForm = {
-        fieldName: this.customFieldForm.value.fieldName,
-        fieldValue: this.customFieldForm.value.fieldValue,
+        fieldName: fieldName,
+        fieldValue: fieldValue,
       };
 
       this.customFieldsList.push(newField);
       this.customFieldForm.reset();
+      
+      this.snackBar.open('Campo agregado correctamente', 'Cerrar', {
+        duration: 2000,
+      });
     }
   }
 
   removeCustomField(index: number): void {
     this.customFieldsList.splice(index, 1);
+    this.snackBar.open('Campo eliminado', 'Cerrar', {
+      duration: 2000,
+    });
   }
 
   onSubmit(): void {
@@ -154,14 +177,15 @@ export class ProviderFormComponent implements OnInit, OnDestroy {
       this.loading = true;
 
       if (this.isEditMode && this.providerId) {
-        console.warn('Update provider functionality not implemented in backend');
-        this.loading = false;
-        this.router.navigate(['/providers']);
+        this.updateProvider();
       } else {
         this.createProvider();
       }
     } else {
       this.markFormGroupTouched(this.providerForm);
+      this.snackBar.open('Por favor completa todos los campos requeridos', 'Cerrar', {
+        duration: 3000,
+      });
     }
   }
 
@@ -178,20 +202,68 @@ export class ProviderFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (success) => {
           if (success) {
+            this.snackBar.open('Proveedor creado exitosamente', 'Cerrar', {
+              duration: 2000,
+            });
+
             if (this.customFieldsList.length > 0) {
-              console.warn(
-                'Custom fields need providerId from creation response. This requires backend modification.'
-              );
+              this.findProviderAndAddCustomFields(createDTO.nit);
+            } else {
+              this.loading = false;
+              this.router.navigate(['/providers']);
             }
-            this.router.navigate(['/providers']);
           }
-          this.loading = false;
         },
         error: (error) => {
           console.error('Error creating provider:', error);
+          this.snackBar.open('Error al crear el proveedor', 'Cerrar', {
+            duration: 3000,
+          });
           this.loading = false;
         },
       });
+  }
+
+  findProviderAndAddCustomFields(nit: string): void {
+    setTimeout(() => {
+      this.providerUseCase
+        .GetProvidersPaged({ pageNumber: 1, pageSize: 1000 })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (result) => {
+            if (result) {
+              const provider = result.results.find((p) => p.nit === nit);
+              if (provider && provider.providerId) {
+                this.addCustomFieldsToProvider(provider.providerId);
+              } else {
+                this.snackBar.open(
+                  'Proveedor creado, pero no se pudieron agregar los campos personalizados',
+                  'Cerrar',
+                  { duration: 4000 }
+                );
+                this.loading = false;
+                this.router.navigate(['/providers']);
+              }
+            }
+          },
+          error: (error) => {
+            console.error('Error finding provider:', error);
+            this.loading = false;
+            this.router.navigate(['/providers']);
+          },
+        });
+    }, 1000);
+  }
+
+  updateProvider(): void {
+    if (!this.providerId) return;
+
+    if (this.customFieldsList.length > 0) {
+      this.addCustomFieldsToProvider(this.providerId);
+    } else {
+      this.loading = false;
+      this.router.navigate(['/providers']);
+    }
   }
 
   addCustomFieldsToProvider(providerId: number): void {
@@ -200,37 +272,50 @@ export class ProviderFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let completedRequests = 0;
-    const totalRequests = this.customFieldsList.length;
-
-    this.customFieldsList.forEach((customField) => {
+    const customFieldRequests = this.customFieldsList.map((customField) => {
       const addCustomFieldDTO: AddCustomFieldDTO = {
         providerId: providerId,
         fieldName: customField.fieldName,
         fieldValue: customField.fieldValue,
       };
 
-      this.providerUseCase
-        .AddCustomFieldToProvider(addCustomFieldDTO)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (success) => {
-            completedRequests++;
-            if (completedRequests === totalRequests) {
-              this.loading = false;
-              this.router.navigate(['/providers']);
-            }
-          },
-          error: (error) => {
-            console.error('Error adding custom field:', error);
-            completedRequests++;
-            if (completedRequests === totalRequests) {
-              this.loading = false;
-              this.router.navigate(['/providers']);
-            }
-          },
-        });
+      return this.providerUseCase.AddCustomFieldToProvider(addCustomFieldDTO);
     });
+
+    forkJoin(customFieldRequests)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (results) => {
+          const successCount = results.filter((r) => r).length;
+
+          if (successCount === this.customFieldsList.length) {
+            this.snackBar.open(
+              'Campos personalizados agregados exitosamente',
+              'Cerrar',
+              { duration: 3000 }
+            );
+          } else {
+            this.snackBar.open(
+              `Algunos campos no se pudieron agregar (${successCount}/${this.customFieldsList.length})`,
+              'Cerrar',
+              { duration: 4000 }
+            );
+          }
+
+          this.loading = false;
+          this.router.navigate(['/providers']);
+        },
+        error: (error) => {
+          console.error('Error adding custom fields:', error);
+          this.snackBar.open(
+            'Error al agregar los campos personalizados',
+            'Cerrar',
+            { duration: 3000 }
+          );
+          this.loading = false;
+          this.router.navigate(['/providers']);
+        },
+      });
   }
 
   markFormGroupTouched(formGroup: FormGroup): void {

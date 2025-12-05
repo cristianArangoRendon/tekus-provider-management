@@ -22,6 +22,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ServicesRoutingModule } from './services-routing.module';
 import { ServiceListComponent } from './service-list/service-list.component';
 import { ServiceFormComponent } from './service-form/service-form.component';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ServiceFormComponent } from './service-form/service-form.component';
     MatDividerModule,
     MatMenuModule,
     MatBadgeModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatToolbar
   ]
 })
 export class ServicesModule { }

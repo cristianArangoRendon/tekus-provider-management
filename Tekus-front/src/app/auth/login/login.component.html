@@ -1,114 +1,108 @@
-<div class="premium-login-container">
-    <div class="animated-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div class="mesh-gradient"></div>
+<div class="login-wrapper">
+  <div class="login-content">
+    <div class="brand-section">
+      <div class="brand-overlay"></div>
+      <div class="brand-content">
+        <div class="company-logo">
+          <div class="logo-ring"></div>
+          <mat-icon>settings_suggest</mat-icon>
+        </div>
+        <h2>Sistema de Gestión</h2>
+        <p class="tagline">Administración integral de proveedores y servicios</p>
+        
+        <div class="features-list">
+          <div class="feature-item">
+            <mat-icon>verified_user</mat-icon>
+            <span>Seguridad garantizada</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>speed</mat-icon>
+            <span>Acceso rápido y eficiente</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>cloud_done</mat-icon>
+            <span>Disponible 24/7</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="glass-card">
-        
-        <div class="brand-header">
-            <div class="brand-icon">
-                <mat-icon class="brand-logo">business</mat-icon>
-                <div class="icon-glow"></div>
-            </div>
-            <div class="brand-text">
-                <h1>TEKUS Sistema</h1>
-                <p>Gestión de Proveedores</p>
-            </div>
+    <div class="form-section">
+      <div class="form-container">
+        <div class="form-header">
+          <h1>Bienvenido</h1>
+          <p>Ingresa tus credenciales para continuar</p>
         </div>
 
-        <form [formGroup]="loginFormGroup" (ngSubmit)="onSubmit()" class="auth-form">
-            
-            <div class="form-group">
-                <div class="floating-label-group">
-                    <div class="input-icon-wrapper">
-                        <mat-icon>alternate_email</mat-icon>
-                    </div>
-                    <input 
-                        type="email"
-                        class="glass-input"
-                        formControlName="email"
-                        placeholder=" "
-                        autocomplete="username"
-                        id="email-input">
-                    <label for="email-input" class="floating-label">Correo Electrónico</label>
-                    <div class="input-border"></div>
-                </div>
-                <div *ngIf="shouldShowEmailError()" class="validation-error">
-                    <mat-icon>error_outline</mat-icon>
-                    <span>{{ getEmailErrorMessage() }}</span>
-                </div>
+        <form [formGroup]="loginFormGroup" (ngSubmit)="onSubmit()" class="login-form">
+          
+          <div class="input-wrapper">
+            <label class="input-label">Correo electrónico</label>
+            <div class="input-container" [class.input-error]="shouldShowEmailError()">
+              <mat-icon class="input-icon">mail_outline</mat-icon>
+              <input 
+                type="email"
+                formControlName="email"
+                placeholder="correo@ejemplo.com"
+                autocomplete="username"
+                class="custom-input">
             </div>
+            <span class="error-text" *ngIf="shouldShowEmailError()">
+              {{ getEmailErrorMessage() }}
+            </span>
+          </div>
 
-            <div class="form-group">
-                <div class="floating-label-group">
-                    <div class="input-icon-wrapper">
-                        <mat-icon>lock_outline</mat-icon>
-                    </div>
-                    <input 
-                        [type]="hide() ? 'password' : 'text'"
-                        class="glass-input"
-                        formControlName="password"
-                        placeholder=" "
-                        autocomplete="current-password"
-                        id="password-input">
-                    <label for="password-input" class="floating-label">Contraseña</label>
-                    <button 
-                        type="button"
-                        class="password-toggle"
-                        (click)="togglePasswordVisibility($event)">
-                        <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
-                    </button>
-                    <div class="input-border"></div>
-                </div>
-                <div *ngIf="shouldShowPasswordError()" class="validation-error">
-                    <mat-icon>error_outline</mat-icon>
-                    <span>{{ getPasswordErrorMessage() }}</span>
-                </div>
+          <div class="input-wrapper">
+            <label class="input-label">Contraseña</label>
+            <div class="input-container" [class.input-error]="shouldShowPasswordError()">
+              <mat-icon class="input-icon">lock_outline</mat-icon>
+              <input 
+                [type]="hide() ? 'password' : 'text'"
+                formControlName="password"
+                placeholder="Ingresa tu contraseña"
+                autocomplete="current-password"
+                class="custom-input">
+              <button 
+                type="button"
+                class="visibility-btn"
+                (click)="togglePasswordVisibility($event)"
+                tabindex="-1">
+                <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
             </div>
+            <span class="error-text" *ngIf="shouldShowPasswordError()">
+              {{ getPasswordErrorMessage() }}
+            </span>
+            <span class="hint-text" *ngIf="shouldShowPasswordHint()">
+              Mínimo 8 caracteres
+            </span>
+          </div>
 
-            <div *ngIf="shouldShowPasswordHint()" class="info-chip">
-                <mat-icon>security</mat-icon>
-                <span>Mínimo 8 caracteres para mayor seguridad</span>
+          <button 
+            type="submit"
+            class="submit-btn"
+            [class.loading]="isLoading()"
+            [disabled]="!(loginFormGroup.valid && !isLoading())">
+            <span *ngIf="!isLoading()">Iniciar sesión</span>
+            <div *ngIf="isLoading()" class="loading-content">
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Verificando...</span>
             </div>
-
-            <button 
-                type="submit"
-                class="premium-button"
-                [disabled]="!(loginFormGroup.valid && !isLoading())">
-                <div class="button-bg"></div>
-                <div class="button-content">
-                    <span *ngIf="!isLoading()">Acceder</span>
-                    <mat-icon *ngIf="!isLoading()">arrow_forward_ios</mat-icon>
-                    <mat-spinner *ngIf="isLoading()" diameter="22"></mat-spinner>
-                    <span *ngIf="isLoading()">Verificando...</span>
-                </div>
-            </button>
+          </button>
 
         </form>
 
-        <div class="trust-badges">
-            <div class="badge">
-                <mat-icon>https</mat-icon>
-                <span>256-bit SSL</span>
-            </div>
-            <div class="badge">
-                <mat-icon>verified</mat-icon>
-                <span>Autenticación Segura</span>
-            </div>
+        <div class="form-footer">
+          <div class="security-badge">
+            <mat-icon>shield</mat-icon>
+            <span>Conexión segura SSL</span>
+          </div>
         </div>
+      </div>
 
-        <div class="login-footer">
-            <p>&copy; {{ currentYear }} TEKUS S.A.S.</p>
-        </div>
-
+      <div class="copyright">
+        <p>&copy; {{ currentYear }} TEKUS S.A.S. Todos los derechos reservados</p>
+      </div>
     </div>
-
-    <div class="floating-shapes">
-        <div class="shape shape-square"></div>
-        <div class="shape shape-circle"></div>
-        <div class="shape shape-triangle"></div>
-    </div>
+  </div>
 </div>

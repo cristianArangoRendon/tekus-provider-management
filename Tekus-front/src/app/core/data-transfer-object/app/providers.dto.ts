@@ -14,6 +14,7 @@ export interface CreateProviderDTO {
   nit: string;
   providerName: string;
   email: string;
+  customFields?: { [key: string]: string };
 }
 
 export interface AddCustomFieldDTO {
@@ -31,6 +32,10 @@ export interface ProviderPagedDTO {
   createdAt: Date;
   updatedAt?: Date;
   totalServices: number;
+}
+export interface CreateProviderResponseDTO {
+  success: boolean;
+  providerId: number;
 }
 
 export type ProvidersPagedResultDTO = TableResultDTO<ProviderPagedDTO>;
