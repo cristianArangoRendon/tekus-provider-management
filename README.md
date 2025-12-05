@@ -28,7 +28,7 @@ Sistema de administración de proveedores y servicios con .NET 9
 
 git clone https://github.com/cristianArangoRendon/tekus-provider-management.git
 
-ejecutar tests: dotnet test --logger "console;verbosity=detailed"
+ejecutar tests backend: dotnet test --logger "console;verbosity=detailed"
 
 ```
 
