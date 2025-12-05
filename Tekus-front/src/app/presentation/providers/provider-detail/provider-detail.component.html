@@ -1,24 +1,25 @@
-<!-- src/app/pages/providers/provider-detail/provider-detail.component.html -->
+<div class="provider-detail-container">
+  @if (!loading && provider) {
+    <div class="header">
+      <div class="title-section">
+        <button mat-icon-button class="back-button" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>Detalle del Proveedor</h1>
+      </div>
 
-<div class="provider-detail-container" *ngIf="!loading && provider">
-  <div class="header">
-    <button mat-icon-button (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <h1>Detalle del Proveedor</h1>
-    <div class="actions">
-      <button mat-raised-button color="accent" (click)="editProvider()">
-        <mat-icon>edit</mat-icon>
-        Editar
-      </button>
-      <button mat-raised-button color="warn" (click)="deleteProvider()">
-        <mat-icon>delete</mat-icon>
-        Eliminar
-      </button>
+      <div class="actions">
+        <button mat-raised-button color="accent" (click)="editProvider()">
+          <mat-icon>edit</mat-icon>
+          Editar
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteProvider()">
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+      </div>
     </div>
-  </div>
 
-  <div class="content">
     <mat-card class="info-card">
       <mat-card-header>
         <mat-card-title>
@@ -59,10 +60,12 @@
             <p>{{ provider.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
           </div>
 
-          <div class="info-item" *ngIf="provider.updatedAt">
-            <label>Última Actualización</label>
-            <p>{{ provider.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</p>
-          </div>
+          @if (provider.updatedAt) {
+            <div class="info-item">
+              <label>Última Actualización</label>
+              <p>{{ provider.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+          }
         </div>
       </mat-card-content>
     </mat-card>
@@ -82,26 +85,30 @@
         </button>
       </mat-card-header>
       <mat-card-content>
-        <div class="custom-fields-list" *ngIf="customFields.length > 0">
-          <div *ngFor="let field of customFields" class="custom-field-item">
-            <div class="field-icon">
-              <mat-icon>label_important</mat-icon>
-            </div>
-            <div class="field-content">
-              <strong>{{ field.key }}</strong>
-              <p>{{ field.value }}</p>
-            </div>
+        @if (customFields.length > 0) {
+          <div class="custom-fields-list">
+            @for (field of customFields; track field.key) {
+              <div class="custom-field-item">
+                <div class="field-icon">
+                  <mat-icon>label_important</mat-icon>
+                </div>
+                <div class="field-content">
+                  <strong>{{ field.key }}</strong>
+                  <p>{{ field.value }}</p>
+                </div>
+              </div>
+            }
           </div>
-        </div>
-
-        <div *ngIf="customFields.length === 0" class="no-custom-fields">
-          <mat-icon>info</mat-icon>
-          <p>No hay campos personalizados</p>
-          <button mat-stroked-button color="primary" (click)="addCustomField()">
-            <mat-icon>add</mat-icon>
-            Agregar campo
-          </button>
-        </div>
+        } @else {
+          <div class="no-custom-fields">
+            <mat-icon>info</mat-icon>
+            <p>No hay campos personalizados</p>
+            <button mat-stroked-button color="primary" (click)="addCustomField()">
+              <mat-icon>add</mat-icon>
+              Agregar campo
+            </button>
+          </div>
+        }
       </mat-card-content>
     </mat-card>
 
@@ -134,10 +141,12 @@
         </div>
       </mat-card-content>
     </mat-card>
-  </div>
-</div>
+  }
 
-<div class="loading-container" *ngIf="loading">
-  <mat-spinner diameter="60"></mat-spinner>
-  <p>Cargando información del proveedor...</p>
+  @if (loading) {
+    <div class="loading-container">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Cargando información del proveedor...</p>
+    </div>
+  }
 </div>

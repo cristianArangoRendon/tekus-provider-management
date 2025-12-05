@@ -1,48 +1,16 @@
-
-export interface DashboardIndicatorsDTO {
-  totalProviders: number;
-  totalServices: number;
-  providersByCountry: CountryIndicatorDTO[];
-  topServices: TopServiceDTO[];
-  recentProviders: RecentProviderDTO[];
-}
-
-export interface CountryIndicatorDTO {
+export interface CountryProvidersDTO {
   country: string;
-  count: number;
-  percentage: number;
+  totalProviders: number;
 }
 
-export interface TopServiceDTO {
-  serviceId: number;
-  serviceName: string;
-  providerCount: number;
-  avgHourlyRate: number;
+export interface CountryServicesDTO {
+  country: string;
+  totalServices: number;
 }
 
-export interface RecentProviderDTO {
-  providerId: number;
-  name: string;
-  nit: string;
-  email: string;
-  servicesCount: number;
-  createdAt: Date;
-}
-
-export interface ServiceStatisticsDTO {
-  totalActive: number;
-  avgRate: number;
-  maxRate: number;
-  minRate: number;
-}
-
-export interface ProviderStatisticsDTO {
-  totalActive: number;
-  withServices: number;
-  withoutServices: number;
-}
-
-export interface QuickSummaryDTO {
+export interface DashboardSummaryDTO {
   totalProviders: number;
   totalServices: number;
+  providersByCountry: CountryProvidersDTO[];
+  servicesByCountry: CountryServicesDTO[];
 }

@@ -2,12 +2,19 @@
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: #f5f5f5;
+  min-height: 100vh;
 
+  // Header simple
   .header {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
 
     .title-section {
       display: flex;
@@ -18,11 +25,15 @@
         mat-icon {
           color: #666;
         }
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
       }
 
       h1 {
         margin: 0;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 500;
         color: #333;
       }
@@ -40,29 +51,50 @@
     }
   }
 
+  // Cards
   .info-card,
   .services-card,
   .custom-fields-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 24px;
 
     mat-card-header {
-      margin-bottom: 16px;
+      background-color: #fafafa;
+      padding: 16px 24px;
+      border-bottom: 1px solid #e0e0e0;
 
       mat-card-title {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 500;
-        color: #555;
+        color: #333;
+        margin: 0;
 
         mat-icon {
           color: #3f51b5;
+          font-size: 22px;
+          width: 22px;
+          height: 22px;
+        }
+      }
+
+      button {
+        mat-icon {
+          font-size: 20px;
         }
       }
     }
+
+    mat-card-content {
+      padding: 24px;
+    }
   }
 
+  // Información General
   .info-card {
     .info-grid {
       display: grid;
@@ -74,7 +106,7 @@
           display: block;
           font-size: 12px;
           font-weight: 600;
-          color: #666;
+          color: #757575;
           text-transform: uppercase;
           letter-spacing: 0.5px;
           margin-bottom: 8px;
@@ -84,6 +116,12 @@
           margin: 0;
           font-size: 16px;
           color: #333;
+          font-weight: 400;
+
+          &.provider-name {
+            font-weight: 500;
+            color: #3f51b5;
+          }
 
           a {
             color: #3f51b5;
@@ -94,146 +132,198 @@
             }
           }
         }
+
+        .services-chip {
+          background-color: #3f51b5;
+          color: white;
+          font-weight: 500;
+        }
       }
     }
   }
 
-  .services-card {
-    .services-list {
+  // Campos Personalizados
+  .custom-fields-card {
+    mat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .custom-fields-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 16px;
 
-      .service-item {
-        background-color: #f8f9fa;
+      .custom-field-item {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+        background-color: #fafafa;
+        border-radius: 6px;
         border: 1px solid #e0e0e0;
-        transition: all 0.3s ease;
 
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .service-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-
-          h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 500;
-            color: #333;
-            flex: 1;
-          }
-
-          .rate-chip {
-            background-color: #4caf50;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-          }
-        }
-
-        .service-countries {
+        .field-icon {
           display: flex;
           align-items: center;
-          gap: 8px;
-          color: #666;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          background-color: #e8eaf6;
+          border-radius: 6px;
+          flex-shrink: 0;
 
           mat-icon {
-            font-size: 18px;
-            width: 18px;
-            height: 18px;
+            color: #3f51b5;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .field-content {
+          flex: 1;
+
+          strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #757575;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
           }
 
-          span {
-            font-size: 14px;
+          p {
+            margin: 0;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
           }
         }
       }
     }
 
-    .no-services {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .no-custom-fields {
+      text-align: center;
       padding: 48px 24px;
       color: #999;
 
       mat-icon {
-        font-size: 64px;
-        width: 64px;
-        height: 64px;
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
         margin-bottom: 16px;
+        color: #bdbdbd;
       }
 
       p {
-        margin: 0;
-        font-size: 16px;
+        margin: 0 0 24px 0;
+        font-size: 15px;
+        color: #757575;
+      }
+
+      button {
+        mat-icon {
+          margin-right: 8px;
+        }
       }
     }
   }
 
-  .custom-fields-card {
-    .custom-fields-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
+  // Servicios
+  .services-card {
+    .services-info {
+      .service-count {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 24px;
+        background-color: #e8eaf6;
+        border-radius: 6px;
+        margin-bottom: 20px;
 
-      .custom-field-item {
-        padding: 16px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-
-        label {
-          display: block;
-          font-size: 12px;
-          font-weight: 600;
-          color: #666;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          margin-bottom: 8px;
+        mat-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          color: #3f51b5;
         }
 
-        .field-value-container {
-          display: flex;
-          align-items: center;
-          gap: 12px;
+        .count-details {
+          h3 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 500;
+            color: #3f51b5;
+          }
 
           p {
-            margin: 0;
-            font-size: 16px;
-            color: #333;
-            flex: 1;
+            margin: 4px 0 0 0;
+            font-size: 14px;
+            color: #666;
           }
+        }
+      }
 
-          .type-chip {
-            font-size: 11px;
-            padding: 2px 8px;
-            height: auto;
-            min-height: 24px;
-            background-color: #e3f2fd;
-            color: #1976d2;
-          }
+      mat-divider {
+        margin: 20px 0;
+      }
+
+      .note {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        background-color: #e3f2fd;
+        border-radius: 6px;
+        border-left: 3px solid #2196f3;
+
+        mat-icon {
+          color: #2196f3;
+          font-size: 22px;
+          width: 22px;
+          height: 22px;
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        p {
+          margin: 0;
+          color: #1565c0;
+          font-size: 14px;
+          line-height: 1.5;
         }
       }
     }
   }
 }
 
+// Loading
 .loading-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 48px;
-  min-height: 400px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+
+  mat-spinner {
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 15px;
+    color: #666;
+  }
 }
 
+// Responsive
 @media (max-width: 768px) {
   .provider-detail-container {
+    padding: 16px;
+
     .header {
       flex-direction: column;
       align-items: flex-start;
@@ -241,7 +331,6 @@
 
       .actions {
         width: 100%;
-        justify-content: stretch;
 
         button {
           flex: 1;
@@ -249,10 +338,12 @@
       }
     }
 
-    .services-card {
-      .services-list {
-        grid-template-columns: 1fr;
-      }
+    .info-card .info-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .custom-fields-card .custom-fields-list {
+      grid-template-columns: 1fr;
     }
   }
 }

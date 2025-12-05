@@ -1,4 +1,3 @@
-
 <div class="provider-form-container">
   <div class="header">
     <h1>{{ isEditMode ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h1>
@@ -20,9 +19,11 @@
                 placeholder="900123456-1"
                 maxlength="11">
               <mat-icon matPrefix>badge</mat-icon>
-              <mat-error *ngIf="providerForm.get('nit')?.invalid">
-                {{ getErrorMessage('nit') }}
-              </mat-error>
+              @if (providerForm.get('nit')?.invalid) {
+                <mat-error>
+                  {{ getErrorMessage('nit') }}
+                </mat-error>
+              }
               <mat-hint>Formato: 999999999-9</mat-hint>
             </mat-form-field>
           </div>
@@ -35,9 +36,11 @@
                 formControlName="providerName" 
                 placeholder="Nombre del proveedor">
               <mat-icon matPrefix>business</mat-icon>
-              <mat-error *ngIf="providerForm.get('providerName')?.invalid">
-                {{ getErrorMessage('providerName') }}
-              </mat-error>
+              @if (providerForm.get('providerName')?.invalid) {
+                <mat-error>
+                  {{ getErrorMessage('providerName') }}
+                </mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -50,9 +53,11 @@
                 formControlName="email" 
                 placeholder="contacto@proveedor.com">
               <mat-icon matPrefix>email</mat-icon>
-              <mat-error *ngIf="providerForm.get('email')?.invalid">
-                {{ getErrorMessage('email') }}
-              </mat-error>
+              @if (providerForm.get('email')?.invalid) {
+                <mat-error>
+                  {{ getErrorMessage('email') }}
+                </mat-error>
+              }
             </mat-form-field>
           </div>
         </div>
@@ -96,34 +101,37 @@
             </mat-card-content>
           </mat-card>
 
-          <div class="custom-fields-list" *ngIf="customFieldsList.length > 0">
-            <div 
-              *ngFor="let field of customFieldsList; let i = index" 
-              class="custom-field-item">
-              
-              <div class="field-info">
-                <mat-icon class="field-icon">label</mat-icon>
-                <div class="field-details">
-                  <strong>{{ field.fieldName }}</strong>
-                  <span class="field-value">{{ field.fieldValue }}</span>
+          @if (customFieldsList.length > 0) {
+            <div class="custom-fields-list">
+              @for (field of customFieldsList; track $index; let i = $index) {
+                <div class="custom-field-item">
+                  <div class="field-info">
+                    <mat-icon class="field-icon">label</mat-icon>
+                    <div class="field-details">
+                      <strong>{{ field.fieldName }}</strong>
+                      <span class="field-value">{{ field.fieldValue }}</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    mat-icon-button 
+                    color="warn" 
+                    type="button"
+                    (click)="removeCustomField(i)"
+                    matTooltip="Eliminar campo">
+                    <mat-icon>delete</mat-icon>
+                  </button>
                 </div>
-              </div>
-
-              <button 
-                mat-icon-button 
-                color="warn" 
-                type="button"
-                (click)="removeCustomField(i)"
-                matTooltip="Eliminar campo">
-                <mat-icon>delete</mat-icon>
-              </button>
+              }
             </div>
-          </div>
+          }
 
-          <div *ngIf="customFieldsList.length === 0" class="no-custom-fields">
-            <mat-icon>info</mat-icon>
-            <p>No hay campos personalizados agregados</p>
-          </div>
+          @if (customFieldsList.length === 0) {
+            <div class="no-custom-fields">
+              <mat-icon>info</mat-icon>
+              <p>No hay campos personalizados agregados</p>
+            </div>
+          }
         </div>
 
         <div class="actions">
@@ -144,9 +152,11 @@
         </div>
       </form>
 
-      <div class="loading-overlay" *ngIf="loading">
-        <mat-spinner></mat-spinner>
-      </div>
+      @if (loading) {
+        <div class="loading-overlay">
+          <mat-spinner></mat-spinner>
+        </div>
+      }
     </mat-card-content>
   </mat-card>
 </div>

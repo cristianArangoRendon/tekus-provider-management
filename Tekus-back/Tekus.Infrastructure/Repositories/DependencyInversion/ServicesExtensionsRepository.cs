@@ -17,6 +17,7 @@ namespace Tekus.Infrastructure.Repository.DependencyInversion
             services.AddTransient<IProviderRepository, ProviderRepository>();
             services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<IDashboardRepository, DashboardRepository>();
+            services.AddTransient<IProviderServiceRepository, ProviderServiceRepository>();
 
             return services;
         }
