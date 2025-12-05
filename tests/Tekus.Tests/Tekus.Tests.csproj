@@ -23,6 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Tekus.Domain\Tekus.Core.csproj" />
     <ProjectReference Include="..\..\src\Tekus.Application\Tekus.Application.csproj" />
+    <ProjectReference Include="..\..\Tekus-back\Tekus.Core\Tekus.Core.csproj" />
+    <ProjectReference Include="..\..\Tekus-back\Tekus.Infrastructure\Tekus.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
