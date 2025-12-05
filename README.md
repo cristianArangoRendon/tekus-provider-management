@@ -30,6 +30,8 @@ git clone https://github.com/cristianArangoRendon/tekus-provider-management.git
 
 ejecutar tests backend: dotnet test --logger "console;verbosity=detailed"
 
+ejecutar test front: ng test
+
 ```
 
 
